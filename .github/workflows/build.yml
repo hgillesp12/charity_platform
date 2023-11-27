@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run Unit Tests
-        run: pytest test/*.py 
+        run: pytest tests/*.py 
 
   # deploy-to-vercel:
   #   needs: run-unit-tests
