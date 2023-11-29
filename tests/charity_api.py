@@ -1,3 +1,4 @@
+from flask import Flask, render_template, send_from_directory, request
 import requests
 from dotenv import load_dotenv
 import os
@@ -26,6 +27,17 @@ def get_charity_info(number):
 
   else:
           print("Invalid registration number! Try again.")
+
+
+@app.route('/register', methods=["POST"])
+def reg_number_submit():
+	reg_number = request.form.get("reg_number")
+	charity_info = get_charity_info(reg_number)
+	if charity_info is None:
+		return render_template("home.html")
+	name = charity_info["charity_name"]
+	return render_template("questionnaire.html",
+							name = name)
 
 number = 1053992
 get_charity_info(number)
