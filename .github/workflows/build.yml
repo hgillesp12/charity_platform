@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v3
     - name: Use API Key
       run: |
-        echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV
+        echo "API_KEY=${{ secrets.REGISTERED_CHARITIES_API_KEY }}" >> $GITHUB_ENV
     - name: test
       run: |
         url = "https://api.charitycommission.gov.uk/register/api/charityRegNumber/1053992/0"

@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 app = Flask(__name__)
 
 #load_dotenv()
-#API_KEY = os.environ.get("API_KEY")
+API_KEY = os.environ.get("REGISTERED_CHARITIES_API_KEY")
 
 def check_charity_reg_number(number):
   url = "https://api.charitycommission.gov.uk/register/api/charityRegNumber/" + str(number) + "/0"
-  headers = {"Ocp-Apim-Subscription-Key":"fab8692f07914991bbf31d3240b90c50"}
+  headers = {"Ocp-Apim-Subscription-Key":API_KEY}
 
   response = requests.get(url, headers=headers)
 
@@ -52,7 +52,7 @@ def reg_number_submit():
 # Display financial info
 def get_financial_history(number):
   url = "https://api.charitycommission.gov.uk/register/api/charityoverview/" + str(number) + "/0"
-  headers = {"Ocp-Apim-Subscription-Key":"fab8692f07914991bbf31d3240b90c50"}
+  headers = {"Ocp-Apim-Subscription-Key":API_KEY}
 
   response = requests.get(url, headers=headers)
 
@@ -89,7 +89,7 @@ def get_financial_history(number):
 # Display charity description
 def get_charity_overview(number):
   url = "https://api.charitycommission.gov.uk/register/api/charityoverview/" + str(number) + "/0"
-  headers = {"Ocp-Apim-Subscription-Key":"fab8692f07914991bbf31d3240b90c50"}
+  headers = {"Ocp-Apim-Subscription-Key":API_KEY}
 
   response = requests.get(url, headers=headers)
 
