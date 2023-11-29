@@ -1,17 +1,16 @@
 from flask import Flask, render_template, send_from_directory, request
 import requests
-#from dotenv import load_dotenv
 import os
 import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
-#load_dotenv()
-API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
+#Use API_KEY when deploying
+#API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 def check_charity_reg_number(number):
   url = "https://api.charitycommission.gov.uk/register/api/charityRegNumber/" + str(number) + "/0"
-  headers = {"Ocp-Apim-Subscription-Key":API_KEY}
+  headers = {"Ocp-Apim-Subscription-Key":"fab8692f07914991bbf31d3240b90c50"}
 
   response = requests.get(url, headers=headers)
 
@@ -31,17 +30,22 @@ def get_charity_info(number):
   else:
         print("Invalid registration number! Try again.")
 
+#@app.route('/')
+#def default_home():
+ #       return render_template("home.html")
 
-@app.route('/register', methods=["POST"])
+@app.route('/')
+def send_to_register():
+        return render_template("register.html",
+        message="Enter charity registration number")
+
+@app.route('/registration_submit', methods=["POST"])
 def reg_number_submit():
-        # To include a form in register.html
-        # Include message in home.html (i.e. {{ message }}) - need default
-        # Include name in questionnaire.html (e.g. hello {{ name }})
         reg_number = request.form.get("reg_number")
         charity_info = check_charity_reg_number(reg_number)
         
         if charity_info is None:
-                return render_template("home.html",
+                return render_template("register.html",
                 message = "Invalid registration number! Try again.")
         
         name = charity_info["charity_name"]
@@ -52,7 +56,7 @@ def reg_number_submit():
 # Display financial info
 def get_financial_history(number):
   url = "https://api.charitycommission.gov.uk/register/api/charityoverview/" + str(number) + "/0"
-  headers = {"Ocp-Apim-Subscription-Key":API_KEY}
+  headers = {"Ocp-Apim-Subscription-Key":"fab8692f07914991bbf31d3240b90c50"}
 
   response = requests.get(url, headers=headers)
 
@@ -89,7 +93,7 @@ def get_financial_history(number):
 # Display charity description
 def get_charity_overview(number):
   url = "https://api.charitycommission.gov.uk/register/api/charityoverview/" + str(number) + "/0"
-  headers = {"Ocp-Apim-Subscription-Key":API_KEY}
+  headers = {"Ocp-Apim-Subscription-Key":"fab8692f07914991bbf31d3240b90c50"}
 
   response = requests.get(url, headers=headers)
 
