@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-        uses: actions/checkout@v3
+      uses: actions/checkout@v3
     - name: Use API Key
       run: |
         echo "API_KEY=${{ secrets.REGISTERED_CHARITIES_API_KEY }}" >> $GITHUB_ENV
@@ -30,7 +30,7 @@ jobs:
         headers = {"Ocp-Apim-Subscription-Key":API_KEY}
         response = requests.get(url, headers=headers)
         charity_info = response.json()
-        print("Hello " + charity_info["charity_name"])
+        echo "Hello " ${charity_info["charity_name"]}"
     
   run-unit-tests:
     needs: charity-api-key
