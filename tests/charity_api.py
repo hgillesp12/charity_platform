@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 app = Flask(__name__)
 
 #load_dotenv()
-API_KEY = os.environ.get("REGISTERED_CHARITIES_API_KEY")
+API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 def check_charity_reg_number(number):
   url = "https://api.charitycommission.gov.uk/register/api/charityRegNumber/" + str(number) + "/0"
