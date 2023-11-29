@@ -30,11 +30,11 @@ def get_charity_info(number):
   else:
         print("Invalid registration number! Try again.")
 
-#@app.route('/')
-#def default_home():
- #       return render_template("home.html")
-
 @app.route('/')
+def default_home():
+       return render_template("index.html")
+
+@app.route('/register')
 def send_to_register():
         return render_template("register.html",
         message="Enter charity registration number")
