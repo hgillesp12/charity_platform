@@ -205,3 +205,76 @@ def test_inserting_single_item_into_message_table(connect_to_database, create_me
     rec = curs.fetchall()
     assert(len(rec) == 1)
 
+
+def test_inserting_multiple_items_into_message_table(connect_to_database, create_message_table):
+    (curs, config) = connect_to_database
+    # Insert multiple entities into charity table
+    curs.execute(config['insert_into']['charity_table'].replace(
+        '@schema_name@', SCHEMA_NAME), ['SVP', 123]
+    )
+    curs.execute(config['insert_into']['charity_table'].replace(
+        '@schema_name@', SCHEMA_NAME), ['Feed', 312]
+    )
+    curs.execute(config['insert_into']['charity_table'].replace(
+        '@schema_name@', SCHEMA_NAME), ['Food Bank', 222]
+    )
+
+    # Insert entities into message table from SVP
+    svp_first_timestamp = datetime(2023, 11, 29, 12, 00, 00)
+    svp_second_timestamp = datetime(2023, 11, 29, 12, 15, 00)
+    svp_third_timestamp = datetime(2023, 11, 30, 8, 00, 00)
+    curs.execute(config['insert_into']['message_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [123, 'SVP first message', svp_first_timestamp]
+    )
+    curs.execute(config['insert_into']['message_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [123, 'SVP second message', svp_second_timestamp]
+    )
+    curs.execute(config['insert_into']['message_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [123, 'SVP third message', svp_third_timestamp]
+    )
+
+    # Insert entities into message table from Feed
+    feed_first_timestamp = datetime(2023, 11, 28, 11, 00, 00)
+    feed_second_timestamp = datetime(2023, 11, 29, 12, 16, 00)
+    feed_third_timestamp = datetime(2023, 11, 30, 7, 30, 00)
+    curs.execute(config['insert_into']['message_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [312, 'Feed first message', feed_first_timestamp]
+    )
+    curs.execute(config['insert_into']['message_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [312, 'Feed second message', feed_second_timestamp]
+    )
+    curs.execute(config['insert_into']['message_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [312, 'Feed third message', feed_third_timestamp]
+    )
+
+    # Insert entities into message table from Food Bank
+    bank_first_timestamp = datetime(2023, 11, 29, 7, 30, 00)
+    bank_second_timestamp = datetime(2023, 11, 29, 8, 30, 00)
+    curs.execute(config['insert_into']['message_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [222, 'Food Bank first message', bank_first_timestamp]
+    )
+    curs.execute(config['insert_into']['message_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [222, 'Feed second message', bank_second_timestamp]
+    )
+
+    # Find all messages
+    curs.execute(config['query']['select_all'].replace(
+        '@schema_name@', SCHEMA_NAME).replace(
+        '@table_name@', 'message'
+    ))
+    rec = curs.fetchall()
+    assert(len(rec) == 8)
+
+    # Check filter all messages by timestamp works
+    curs.execute(config['query']['select_all_messages_order_by_timestamp_desc'].replace(
+        '@schema_name@', SCHEMA_NAME)
+    )
+    rec = curs.fetchone()
+    assert(rec[2] == 'SVP third message')
+
+    # Check filter all messages by charity works
+    curs.execute(config['query']['select_charity_messages_order_by_timestamp_desc'].replace(
+        '@schema_name@', SCHEMA_NAME), [222]
+    )
+    rec = curs.fetchall()
+    assert(len(rec) == 2)
