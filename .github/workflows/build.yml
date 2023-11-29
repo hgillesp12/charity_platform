@@ -14,9 +14,26 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run flake8
         run: flake8 src/*.py
-  
-  run-unit-tests:
+
+  charity-api-key:
     needs: python-formatting
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+        uses: actions/checkout@v3
+    - name: Use API Key
+      run: |
+        echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV
+    - name: test
+      run: |
+        url = "https://api.charitycommission.gov.uk/register/api/charityRegNumber/1053992/0"
+        headers = {"Ocp-Apim-Subscription-Key":API_KEY}
+        response = requests.get(url, headers=headers)
+        charity_info = response.json()
+        print("Hello " + charity_info["charity_name"])
+    
+  run-unit-tests:
+    needs: charity-api-key
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
