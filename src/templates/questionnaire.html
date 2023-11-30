@@ -4,6 +4,37 @@
     </head>
     <body>
 		<h1>Hello {{ name }}</h1>
+        <p> {{ message }}</p>
         <p>Please fill in the following schedule:</p>
+        <form action="/schedule" method="post">
+            <br>
+            <label for="day">Day:</label><br>
+			<input type="radio" id="monday" name="day" value="Monday">
+			<label for="monday">Monday</label><br>
+			<input type="radio" id="tuesday" name="day" value="Tuesday">
+			<label for="tuesday">Tuesday</label><br>
+            <input type="radio" id="wednesday" name="day" value="Wednesday">
+			<label for="wednesday">Wednesday</label><br>
+            <input type="radio" id="thursday" name="day" value="Thursday">
+			<label for="thursday">Thursday</label><br>
+            <input type="radio" id="friday" name="day" value="Friday">
+			<label for="friday">Friday</label><br>
+            <input type="radio" id="saturday" name="day" value="Saturday">
+			<label for="saturday">Saturday</label><br>
+            <input type="radio" id="sunday" name="day" value="Sunday">
+			<label for="Sunday">Sunday</label><br>
+            <label for="time">Time:</label><br>
+			<input type="radio" id="morning" name="time" value="Morning">
+			<label for="morning">Morning</label><br>
+			<input type="radio" id="afternoon" name="time" value="Afternoon">
+			<label for="afternoon">Afternoon</label><br>
+            <input type="radio" id="evening" name="time" value="Evening">
+            <label for="evening">Evening</label><br>
+            <label for="locationfield">Location:</label>
+			<input type="text" id="locationfield" name="location"><br><br>
+            <input type="submit" name="submit" value="Submit">
+            <input type="submit" name="add_another" value="Add another">
+
+        </form><br> 
     </body>
 </html>
