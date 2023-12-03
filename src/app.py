@@ -67,7 +67,7 @@ def reg_number_submit():
                            Try again.")
 
 
-@app.route('/schedule', methods=["POST"])
+@app.route('/schedule_submit', methods=["POST"])
 def schedule_submit():
     # name=name
     day = request.form.get("day")
@@ -77,7 +77,7 @@ def schedule_submit():
     if day and time and location:
         # add day, time, location to db using test_database.py functions
         if 'submit' in request.form:
-            return render_template("index.html")
+            return render_template("main_page.html")
 
         else:
             return render_template("questionnaire.html",
