@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request  # , send_from_directory
 import requests
-# import os
-# import matplotlib.pyplot as plt
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 app = Flask(__name__)
-
-# Use API_KEY when deploying
-# API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 
 @app.route('/')
@@ -23,7 +23,7 @@ def send_to_register():
 def check_charity_reg_number(number):
     url = "https://api.charitycommission.gov.uk/register/api/"\
         "charityRegNumber/" + str(number) + "/0"
-    headers = {"Ocp-Apim-Subscription-Key": "fab8692f07914991bbf31d3240b90c50"}
+    headers = {"Ocp-Apim-Subscription-Key": API_KEY}
 
     response = requests.get(url, headers=headers)
 
