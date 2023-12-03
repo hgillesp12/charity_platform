@@ -14,6 +14,21 @@ def default_home():
     return render_template("index.html")
 
 
+@app.route('/main')
+def send_to_main():
+    return render_template("main_page.html")
+
+
+@app.route('/post')
+def send_to_post():
+    return render_template("post_message.html")
+
+
+@app.route('/profile')
+def send_to_profile():
+    return render_template("profile_page.html")
+
+
 @app.route('/register')
 def send_to_register():
     return render_template("register.html",
