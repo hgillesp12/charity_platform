@@ -19,7 +19,7 @@ jobs:
     needs: python-formatting
     runs-on: ubuntu-latest
     env:
-      REGISTERED_CHARITIES_API_KEY:${{ secrets.REGISTERED_CHARITIES_API_KEY }}
+      REGISTERED_CHARITIES_API_KEY: ${{ secrets.REGISTERED_CHARITIES_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -32,7 +32,7 @@ jobs:
       - name: Run Unit Tests
         run: pytest tests/*.py 
         env:
-          REGISTERED_CHARITIES_API_KEY:${{ secrets.REGISTERED_CHARITIES_API_KEY }}
+          REGISTERED_CHARITIES_API_KEY: ${{ secrets.REGISTERED_CHARITIES_API_KEY }}
 
   deploy-to-vercel:
     needs: run-unit-tests
