@@ -10,7 +10,7 @@ SCHEMA_NAME = 'test_schema'
 def connect_to_database(schema_name=SCHEMA_NAME):
     dirname = os.getcwd()
     config = configparser.ConfigParser()
-    config.read(os.path.join(dirname, 'src/dbtool.ini'))
+    config.read(os.path.join(dirname, 'api/dbtool.ini'))
     conn = db.connect(**config['connection'])
     curs = conn.cursor()
     curs.execute(config['create_schema']['new_schema'].replace('@schema_name@', schema_name))
