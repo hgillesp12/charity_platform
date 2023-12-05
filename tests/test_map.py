@@ -6,41 +6,7 @@ import psycopg2
 
 app = Flask(__name__)
 
-
-# Function to establish a database connection
-def get_db_connection():
-    connection_params = {
-        'dbname': 'hgg23',
-        'user': 'hgg23',
-        'password': 'nR044s4B*f40',
-        'host': 'db.doc.ic.ac.uk',
-        'port': 5432
-    }
-    return psycopg2.connect(**connection_params)
-
-@app.route('/test_main_page')
-def test_map():
-    # Connect to the database
-    connection = get_db_connection()
-    cursor = connection.cursor()
-
-    # Query to fetch data from the schedule_table
-    query = "SELECT charity, day, time, location FROM your_schema_name.schedule"
-    cursor.execute(query)
-    schedule_data = cursor.fetchall()
-
-    # Close the database connection
-    cursor.close()
-    connection.close()
-
-
-
-
-
-
-
-    # Create a dictionary to store the borough coordinates
-    borough_coordinates = {
+borough_coordinates = {
         "Barking and Dagenham": [51.5607, 0.1557],
         "Barnet": [51.6252, -0.1517],
         "Bexley": [51.4549, 0.1505],
@@ -72,6 +38,56 @@ def test_map():
         "Westminster": [51.4973, -0.1372]
     }
 
+SCHEMA_NAME = "test_schema"
+
+# Function to establish a database connection
+def test_inserting_multiple_items_into_schedule_table_to_the_map(connect_to_database, create_schedule_table):
+    (curs, config) = connect_to_database
+    # Set up charity table with multiple entities
+    curs.execute(config['insert_into']['charity_table'].replace(
+        '@schema_name@', SCHEMA_NAME), ['SVP', 123]
+    )
+    curs.execute(config['insert_into']['charity_table'].replace(
+        '@schema_name@', SCHEMA_NAME), ['Feed', 312]
+    )
+    # Insert four entries into schedule table and assert presence
+    curs.execute(config['insert_into']['schedule_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [123, 'Monday', 'Afternoon', 'Kensington and Chelsea']
+    )
+    curs.execute(config['insert_into']['schedule_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [123, 'Wednesday', 'Morning', 'Camden']
+    )
+    curs.execute(config['insert_into']['schedule_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [312, 'Wednesday', 'Morning', 'Hackney']
+    )
+    curs.execute(config['insert_into']['schedule_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [312, 'Tuesday', 'Evening', 'Camden']
+    )
+    curs.execute(config['insert_into']['schedule_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [123, 'Wednesday', 'Afternoon', 'Ealing']
+    )
+     curs.execute(config['query']['select_all'].replace(
+        '@schema_name@', SCHEMA_NAME).replace(
+        '@table_name@', 'schedule'
+    ))
+    rec = curs.fetchall()
+
+
+    for schedule in rec:
+        charity = schedule[0]
+        day = schedule[1]
+        time = schedule[2]
+        location = schedule[3]
+        popup_content = f"Charity: {charity}<br>Day: {day}<br>Time: {time}<br>Location: {location}"
+            folium.Marker(
+                location = borough_coordinates[location], # Replace with actual coordinates based on location
+                popup=popup_content,
+                icon=folium.Icon(color="green", icon="calendar")
+            ).add_to(my_map)
+
+    # Create a dictionary to store the borough coordinates
+    
+
 
     # Create a base map centered around London
     map_center = [51.509865, -0.118092]  # Coordinates for central London
@@ -101,6 +117,6 @@ def test_map():
     map_html_string = my_map._repr_html_()
 
     # Render the main_page.html template with the map HTML string and events data
-    return render_template("main_page.html", map_html_string=map_html_string, events=events)
+    return render_template("test_main_page.html", map_html_string=map_html_string)
 
     
