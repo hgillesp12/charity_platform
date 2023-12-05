@@ -206,9 +206,9 @@ def schedule_submit(name, reg_number):
 @app.route('/bulletin_board', methods=["POST"])
 def post_message():
     message = request.form.get("message")
-    now = datetime.now()
-    sql_timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
-    params = (message, sql_timestamp)
+    # now = datetime.now()
+    # sql_timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
+    # params = (message, sql_timestamp)
 
     if 'cancel' in request.form:
         return render_template("main_page.html")
