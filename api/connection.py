@@ -2,9 +2,7 @@ import os
 import configparser
 import psycopg2 as db
 
-SCHEMA_NAME = 'test_live_schema'
-
-def connect_to_database(schema_name=SCHEMA_NAME):
+def connect_to_database():
     dirname = os.getcwd()
     config = configparser.ConfigParser()
     config.read(os.path.join(dirname, 'dbtool.ini'))
