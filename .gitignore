@@ -55,5 +55,5 @@ docs/_build/
 # dotenv
 .env
 
-# .DC_Store
+# .DS_Store
 .DS_Store
