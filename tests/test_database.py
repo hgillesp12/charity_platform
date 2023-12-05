@@ -1,4 +1,3 @@
-import pytest
 from datetime import datetime
 
 SCHEMA_NAME = 'test_schema'
