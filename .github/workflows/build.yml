@@ -13,11 +13,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run flake8
-        run: flake8 src/*.py
+        run: flake8 api/*.py
     
   run-unit-tests:
     needs: python-formatting
     runs-on: ubuntu-latest
+    env:
+      REGISTERED_CHARITIES_API_KEY: ${{ secrets.REGISTERED_CHARITIES_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -29,6 +31,8 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run Unit Tests
         run: pytest tests/*.py 
+        env:
+          REGISTERED_CHARITIES_API_KEY: ${{ secrets.REGISTERED_CHARITIES_API_KEY }}
 
   deploy-to-vercel:
     needs: run-unit-tests

@@ -1,17 +1,32 @@
 from flask import Flask, render_template, request  # , send_from_directory
 import requests
-# import os
-# import matplotlib.pyplot as plt
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 app = Flask(__name__)
-
-# Use API_KEY when deploying
-# API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 
 @app.route('/')
 def default_home():
     return render_template("index.html")
+
+
+@app.route('/main')
+def send_to_main():
+    return render_template("main_page.html")
+
+
+@app.route('/post')
+def send_to_post():
+    return render_template("post_message.html")
+
+
+@app.route('/profile')
+def send_to_profile():
+    return render_template("profile_page.html")
 
 
 @app.route('/register')
@@ -23,7 +38,7 @@ def send_to_register():
 def check_charity_reg_number(number):
     url = "https://api.charitycommission.gov.uk/register/api/"\
         "charityRegNumber/" + str(number) + "/0"
-    headers = {"Ocp-Apim-Subscription-Key": "fab8692f07914991bbf31d3240b90c50"}
+    headers = {"Ocp-Apim-Subscription-Key": API_KEY}
 
     response = requests.get(url, headers=headers)
 
@@ -52,7 +67,7 @@ def reg_number_submit():
                            Try again.")
 
 
-@app.route('/schedule', methods=["POST"])
+@app.route('/schedule_submit', methods=["POST"])
 def schedule_submit():
     # name=name
     day = request.form.get("day")
@@ -62,7 +77,7 @@ def schedule_submit():
     if day and time and location:
         # add day, time, location to db using test_database.py functions
         if 'submit' in request.form:
-            return render_template("index.html")
+            return render_template("main_page.html")
 
         else:
             return render_template("questionnaire.html",
