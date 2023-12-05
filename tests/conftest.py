@@ -11,12 +11,11 @@ def connect_to_database(schema_name=SCHEMA_NAME):
     dirname = os.getcwd()
     config = configparser.ConfigParser()
     config.read(os.path.join(dirname, 'api/dbtool.ini'))
-    conn = db.connect(dbname=os.getenv("DB_NAME"),
-                      user=os.getenv("DB_USER"), 
-                      password=os.getenv("DB_PASSWORD"),
-                      host=os.getenv("DB_HOST"),
-                      port=os.getenv("DB_PORT")
-                      )
+    conn = db.connect(dbname=os.getenv('DB_NAME'),
+                      user=os.getenv('DB_USER'), 
+                      password=os.getenv('DB_PASSWORD'),
+                      host=os.getenv('DB_HOST'),
+                      port=os.getenv('DB_PORT'))
     curs = conn.cursor()
     curs.execute(config['create_schema']['new_schema'].replace('@schema_name@', schema_name))
     return curs, config
