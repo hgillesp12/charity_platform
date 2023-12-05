@@ -199,3 +199,15 @@ def schedule_submit(name, reg_number):
                                    message="Schedule not added successfully. Add\
                                    another schedule.")
 
+
+
+@app.route('/bulletin_board', methods=["POST"])
+def post_message():
+    message = request.form.get("message")
+
+    if 'cancel' in request.form:
+        return render_template("main_page.html")
+
+    if message:
+        # add message and name to the db
+        return render_template("main_page.html")
