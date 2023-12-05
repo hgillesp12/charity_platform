@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>London Events Map</title>
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Include Folium CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/folium/folium.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        #map-container {
+            flex: 0;
+            position: relative;
+            width: 60%; /* Adjust the width as needed */
+            margin: 0 auto; /* Center the container horizontally */
+            margin-bottom: 5px; /* Add margin to the bottom */
+        }
+
+        #map {
+            width: 100%; /* Make the map fill the container */
+            height: 100%; /* Make the map fill the container */
+        }
+
+        #filters-container {
+            background-color: #f0f0f0;
+            padding: 10px;
+            width: 60%; /* Match the width of the map container */
+            margin: 0 auto; /* Center the filters container horizontally within the map container */
+        }
+
+        #filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #apply-button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map-container">
+        <div id="map">{{ map_html_string|safe }}</div>
+        <div id="filters-container">
+            <h3>Filters</h3>
+            <form id="filter-form">
+                <label for="charity-filter">Charity:</label>
+                <select id="charity-filter" name="charity">
+                    <!-- Add dynamic options based on the data in app.py -->
+                    {% for event in events %}
+                        <option value="{{ event['charity'] }}">{{ event['charity'] }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="day-filter">Day:</label>
+                <select id="day-filter" name="day">
+                    <!-- Add dynamic options based on the data in app.py -->
+                    {% for event in events %}
+                        <option value="{{ event['day'] }}">{{ event['day'] }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="time-filter">Time:</label>
+                <select id="time-filter" name="time">
+                    <!-- Add dynamic options based on the data in app.py -->
+                    {% for event in events %}
+                        <option value="{{ event['time'] }}">{{ event['time'] }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="location-filter">Location:</label>
+                <select id="location-filter" name="location">
+                    <!-- Add dynamic options based on the data in app.py -->
+                    {% for event in events %}
+                        <option value="{{ event['location'] }}">{{ event['location'] }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="button" id="apply-button" onclick="applyFilters()">Apply Filters</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include Leaflet and Folium JavaScript -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/folium/folium.js"></script>
+    <script>
+        function applyFilters() {
+            // Get selected filter values
+            var charity = document.getElementById('charity-filter').value;
+            var day = document.getElementById('day-filter').value;
+            var time = document.getElementById('time-filter').value;
+            var location = document.getElementById('location-filter').value;
+
+            // Update the map with filtered data
+            // You need to implement this part based on your specific requirements
+            // This can involve hiding/showing markers based on the selected filters
+            // or updating the map with new data from the server
+            // For simplicity, let's assume you have a function updateMap(charity, day, time, location)
+            // that updates the map based on the selected filters
+
+            // Example:
+            updateMap(charity, day, time, location);
+        }
+
+        // Example function to update the map (replace with your actual implementation)
+        function updateMap(charity, day, time, location) {
+            // You need to implement this function based on your specific requirements
+            // This can involve hiding/showing markers based on the selected filters
+            // or updating the map with new data from the server
+
+            // For simplicity, let's assume you have a list of markers and you want to hide/show them
+            var markers = document.getElementsByClassName('leaflet-marker-icon');
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].style.display = 'block'; // Show all markers
+            }
+        }
+    </script>
+</body>
+</html>
