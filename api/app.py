@@ -1,9 +1,7 @@
 from flask import Flask, render_template, request  # , send_from_directory
 import requests
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
 API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 app = Flask(__name__)
