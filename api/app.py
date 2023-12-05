@@ -1,11 +1,40 @@
 from flask import Flask, render_template, request  # , send_from_directory
 import requests
 import os
+from connection import connect_to_database
 
 API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 app = Flask(__name__)
+SCHEMA_NAME = 'test_live_schema'
 
+with app.app_context():
+    (curs, config, conn) = connect_to_database
+    # Check if the live_schema exists, if not then make it
+    curs.execute(config['check_exists']['schema'].replace('@schema_name@', SCHEMA_NAME))
+    rec = curs.fetchall()
+    if (len(rec) == 0):
+        curs.execute(config['create_schema']['new_schema'].replace('@schema_name@', SCHEMA_NAME))
+        conn.commit()
+    
+    # Check if the three tables we need exist, if not create them
+    curs.execute(config['check_exists']['table'].replace('@schema_name@', SCHEMA_NAME).replace('@table_name@', 'charity'))
+    rec = curs.fetchall()
+    if (len(rec) == 0):
+        curs.execute(config['create_table']['charity_table'].replace('@schema_name@', SCHEMA_NAME))
+        conn.commit()
+
+    curs.execute(config['check_exists']['table'].replace('@schema_name@', SCHEMA_NAME).replace('@table_name@', 'schedule'))
+    rec = curs.fetchall()
+    if (len(rec) == 0):
+        curs.execute(config['create_table']['schedule_table'].replace('@schema_name@', SCHEMA_NAME)) 
+        conn.commit()
+
+    curs.execute(config['check_exists']['table'].replace('@schema_name@', SCHEMA_NAME).replace('@table_name@', 'message'))
+    rec = curs.fetchall()
+    if (len(rec) == 0):
+        curs.execute(config['create_table']['message_table'].replace('@schema_name@', SCHEMA_NAME))
+        conn.commit()
 
 @app.route('/')
 def default_home():
@@ -55,6 +84,7 @@ def reg_number_submit():
     if response:
         charity_info = response.json()
         name = charity_info["charity_name"].title()
+
         # add charity to db using test_database.py functions
         # parameters: reg_number and name
         return render_template("questionnaire.html",
