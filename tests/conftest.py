@@ -3,7 +3,6 @@ import os
 import pytest
 import configparser
 import psycopg2 as db
-from dotenv import load_dotenv
 
 SCHEMA_NAME = 'test_schema'
 
