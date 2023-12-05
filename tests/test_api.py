@@ -1,8 +1,6 @@
 import requests
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
 API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 number = 1053992
