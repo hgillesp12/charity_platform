@@ -6,45 +6,45 @@ from connection import connect_to_database
 API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 app = Flask(__name__)
-SCHEMA_NAME = 'test_live_schema'
+SCHEMA_NAME = 'test_new_schema'
 
 with app.app_context():
     (curs, config, conn) = connect_to_database()
-    # Check if the live_schema exists, if not then make it
-    try:
-        curs.execute(config['check_exists']['schema'], [SCHEMA_NAME])
-    except:
-        conn.rollback()
-        curs.execute(config['create_schema']['new_schema'].replace('@schema_name@', SCHEMA_NAME))
-        conn.commit()
-    
-    # Check if the three tables we need exist, if not create them
-    try:
-        curs.execute(config['check_exists']['table'], [SCHEMA_NAME, 'charity'])
-    except:
-        conn.rollback()
-        curs.execute(config['create_table']['charity_table'].replace('@schema_name@', SCHEMA_NAME))
-        conn.commit()
 
-    try:
-        curs.execute(config['check_exists']['table'], [SCHEMA_NAME, 'schedule'])
-    except:
-        conn.rollback()
-        curs.execute(config['create_table']['day_enum'].replace(
-            '@schema_name@', SCHEMA_NAME))
-        curs.execute(config['create_table']['time_enum'].replace(
-            '@schema_name@', SCHEMA_NAME))
-        curs.execute(config['create_table']['schedule_table'].replace('@schema_name@', SCHEMA_NAME)) 
-        conn.commit()
+    # Function to check and create schema if not exists
+    def create_schema():
+        try:
+            curs.execute(config['check_exists']['schema'], [SCHEMA_NAME])
+            if curs.rowcount == 0:
+                curs.execute(config['create_schema']['new_schema'].replace('@schema_name@', SCHEMA_NAME))
+                conn.commit()
+        except Exception as e:
+            print(e)
+            conn.rollback()
 
-    try:
-        curs.execute(config['check_exists']['table'], [SCHEMA_NAME, 'message'])
-    except:
-        conn.rollback()
-        curs.execute(config['create_table']['message_table'].replace('@schema_name@', SCHEMA_NAME))
-        conn.commit()
-        
+    # Function to check and create a table if not exists
+    def create_table(table_name, create_table_query):
+        try:
+            curs.execute(config['check_exists']['table'], [SCHEMA_NAME, table_name])
+            if curs.rowcount == 0:
+                curs.execute(create_table_query.replace('@schema_name@', SCHEMA_NAME))
+                conn.commit()
+        except Exception as e:
+            print(e)
+            conn.rollback()
+
+    # Check and create schema
+    create_schema()
+
+    # Check and create tables
+    create_table('charity', config['create_table']['charity_table'])
+    create_table('day_enum', config['create_table']['day_enum'])
+    create_table('time_enum', config['create_table']['time_enum'])
+    create_table('schedule_table', config['create_table']['schedule_table'])
+    create_table('message', config['create_table']['message_table'])
+
     conn.close()
+
 
 @app.route('/')
 def default_home():
@@ -56,7 +56,7 @@ def send_to_main():
     return render_template("main_page.html")
 
 
-@app.route('/post')
+@app.route('/post_message')
 def send_to_post():
     return render_template("post_message.html")
 
@@ -85,44 +85,103 @@ def check_charity_reg_number(number):
     else:
         return None
 
+@app.route('/login')
+def send_to_login():
+    return render_template("login.html")
+
+@app.route('/login_submit', methods=["POST"])
+def send_to_profile_page():
+    reg_number = request.form.get("reg_number")
+    response = check_charity_reg_number(reg_number)
+    if not response:
+        return render_template("login.html", 
+                               message="Invalid charity ID number! Try again.")
+    charity_info = response.json()
+    name = charity_info["charity_name"].title()
+    return render_template("profile_page.html", name=name, reg_number=reg_number)
 
 @app.route('/registration_submit', methods=["POST"])
 def reg_number_submit():
     reg_number = request.form.get("reg_number")
     response = check_charity_reg_number(reg_number)
+    
+    if not response:
+        return render_template("register.html", 
+                               message="Invalid registration number! Try again.")
 
-    if response:
+    try:
         charity_info = response.json()
         name = charity_info["charity_name"].title()
 
-        # add charity to db using test_database.py functions
-        # parameters: reg_number and name
-        return render_template("questionnaire.html",
-                               name=name)
+        # Add charity to the database using test_database.py functions
+        # Parameters: reg_number and name
+        curs, config, conn = connect_to_database()
 
-    return render_template("register.html",
-                           message="Invalid registration number! \
-                           Try again.")
+        try:
+            curs.execute(config['query']['select_charity_by_number'].replace(
+                '@schema_name@', SCHEMA_NAME), [reg_number]
+            )
+            if (curs.rowcount == 1):
+                return render_template("index.html", 
+                                       message="Charity already registered. Please log in.")
+        except Exception as e:
+            print(f"Error: {e}")
+            return render_template("register.html", 
+                               message="Invalid registration number! Try again.") 
+
+        curs.execute(config['insert_into']['charity_table'].replace(
+            '@schema_name@', SCHEMA_NAME), [name, reg_number]
+        )
+
+        if curs.rowcount == 1:
+            conn.commit()
+            return render_template("questionnaire.html", name=name, reg_number=reg_number)
+        else:
+            return render_template("register.html",
+                                message="Invalid registration number! Try again.")
+    
+    except Exception as e:
+        print(f"Error: {e}")
+        return render_template("register.html", 
+                               message="Invalid registration number! Try again.")
 
 
-@app.route('/schedule_submit', methods=["POST"])
-def schedule_submit():
-    # name=name
+@app.route('/questionnaire/<name>/<reg_number>')
+def submit_new_schedule(name, reg_number):
+    return render_template("questionnaire.html", name=name, reg_number=reg_number,
+                           message="Submit a new schedule")
+
+@app.route('/schedule_submit/<name>/<reg_number>', methods=['POST'])
+def schedule_submit(name, reg_number):
     day = request.form.get("day")
     time = request.form.get("time")
     location = request.form.get("location")
 
-    if day and time and location:
-        # add day, time, location to db using test_database.py functions
-        if 'submit' in request.form:
-            return render_template("main_page.html")
-
-        else:
-            return render_template("questionnaire.html",
-                                   message="Schedule successfully added. Add\
-                                   another schedule.")
-
-    else:
-        return render_template("questionnaire.html",
+    if not (day and time and location):
+        return render_template("questionnaire.html", name=name, reg_number=reg_number,
                                message="Missing data - please fill in all \
                                fields")
+    
+    try:
+        curs, config, conn = connect_to_database()
+        curs.execute(config['insert_into']['schedule_table'].replace(
+            '@schema_name@', SCHEMA_NAME), [reg_number, day, time, location]
+        )
+        if curs.rowcount == 1:
+            conn.commit()
+            if 'submit' in request.form:
+                return render_template("main_page.html")
+            else:
+                return render_template("questionnaire.html", name=name, reg_number=reg_number, 
+                                   message="Schedule successfully added. Add\
+                                   another schedule.")
+        else:
+            return render_template("questionnaire.html", name=name, reg_number=reg_number, 
+                                   message="Schedule not added successfully. Add\
+                                   another schedule.")
+    except Exception as e:
+        print(f"Error: {e}")
+        return render_template("questionnaire.html", name=name, reg_number=reg_number,
+                                   message="Schedule not added successfully. Add\
+                                   another schedule.")
+
