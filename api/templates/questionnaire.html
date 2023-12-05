@@ -1,42 +1,201 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Questionnaire</title>
-        <link rel="icon" href="data:,">
-    </head>
-    <body>
-		<h1>Hello {{ name }}</h1>
-        <p> {{ message }}</p>
-        <p>Please fill in the following schedule:</p>
-        <form action="/schedule_submit/{{ name }}/{{ reg_number }}" method="post">
-            <br>
-            <label for="day">Day:</label><br>
-			<input type="radio" id="monday" name="day" value="Monday">
-			<label for="monday">Monday</label><br>
-			<input type="radio" id="tuesday" name="day" value="Tuesday">
-			<label for="tuesday">Tuesday</label><br>
-            <input type="radio" id="wednesday" name="day" value="Wednesday">
-			<label for="wednesday">Wednesday</label><br>
-            <input type="radio" id="thursday" name="day" value="Thursday">
-			<label for="thursday">Thursday</label><br>
-            <input type="radio" id="friday" name="day" value="Friday">
-			<label for="friday">Friday</label><br>
-            <input type="radio" id="saturday" name="day" value="Saturday">
-			<label for="saturday">Saturday</label><br>
-            <input type="radio" id="sunday" name="day" value="Sunday">
-			<label for="Sunday">Sunday</label><br>
-            <label for="time">Time:</label><br>
-			<input type="radio" id="morning" name="time" value="Morning">
-			<label for="morning">Morning</label><br>
-			<input type="radio" id="afternoon" name="time" value="Afternoon">
-			<label for="afternoon">Afternoon</label><br>
-            <input type="radio" id="evening" name="time" value="Evening">
-            <label for="evening">Evening</label><br>
-            <label for="locationfield">Location:</label>
-			<input type="text" id="locationfield" name="location"><br><br>
-            <input type="submit" name="submit" value="Submit">
-            <input type="submit" name="add_another" value="Add another">
+  <head>
+    <!-- Bootstrap CSS CDN -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="center-card">
+      <div class="card custom-card">
+        <div class="card-body">
+          <p>Registration</p>
+          <p>Hello {{ name }}</p>
+          <p>Please complete the following form</p>
+          <div class="container">
+            <form action="/schedule_submit/{{ name }}/{{ reg_number }}" method="post">
+              <div class="row">
+                <!-- Left column for week days -->
+                <div class="col">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="day"
+                      id="monday"
+                      value="Monday"
+                    />
+                    <label class="form-check-label" for="monday">Monday</label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="day"
+                      id="tuesday"
+                      value="Tuesday"
+                    />
+                    <label class="form-check-label" for="tuesday"
+                      >Tuesday</label
+                    >
+                  </div>
+                  <!-- Add other weekdays here -->
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="day"
+                      id="wednesday"
+                      value="Wednesday"
+                    />
+                    <label class="form-check-label" for="wednesday"
+                      >Wednesday</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="day"
+                      id="thursday"
+                      value="Thursday"
+                    />
+                    <label class="form-check-label" for="thursday"
+                      >Thursday</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="day"
+                      id="friday"
+                      value="Friday"
+                    />
+                    <label class="form-check-label" for="friday">Friday</label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="day"
+                      id="saturday"
+                      value="Saturday"
+                    />
+                    <label class="form-check-label" for="saturday"
+                      >Saturday</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="day"
+                      id="sunday"
+                      value="Sunday"
+                    />
+                    <label class="form-check-label" for="sunday">Sunday</label>
+                  </div>
+                </div>
 
-        </form><br> 
-    </body>
+                <!-- Right column for time of day -->
+                <div class="col">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="timeOfDay"
+                      id="morning"
+                      value="morning"
+                    />
+                    <label class="form-check-label" for="morning"
+                      >Morning</label
+                    >
+                  </div>
+                  <!-- Add other times of day here -->
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="timeOfDay"
+                      id="afternoon"
+                      value="afternoon"
+                    />
+                    <label class="form-check-label" for="afternoon"
+                      >Afternoon</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="timeOfDay"
+                      id="evening"
+                      value="evening"
+                    />
+                    <label class="form-check-label" for="evening"
+                      >Evening</label
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <label for="locationfield">Location:</label>
+                  <input
+                    type="text"
+                    id="locationfield"
+                    name="location"
+                    class="form-control"
+                  />
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <p>{{ message }}</p>
+    <p>Please fill in the following schedule:</p>
+    <form action="/schedule_submit" method="post">
+      <br />
+      <label for="day">Day:</label><br />
+      <input type="radio" id="monday" name="day" value="Monday" />
+      <label for="monday">Monday</label><br />
+      <input type="radio" id="tuesday" name="day" value="Tuesday" />
+      <label for="tuesday">Tuesday</label><br />
+      <input type="radio" id="wednesday" name="day" value="Wednesday" />
+      <label for="wednesday">Wednesday</label><br />
+      <input type="radio" id="thursday" name="day" value="Thursday" />
+      <label for="thursday">Thursday</label><br />
+      <input type="radio" id="friday" name="day" value="Friday" />
+      <label for="friday">Friday</label><br />
+      <input type="radio" id="saturday" name="day" value="Saturday" />
+      <label for="saturday">Saturday</label><br />
+      <input type="radio" id="sunday" name="day" value="Sunday" />
+      <label for="sunday">Sunday</label><br />
+      <input type="radio" id="saturday" name="day" value="Saturday" />
+      <label for="saturday">Saturday</label><br />
+      <input type="radio" id="sunday" name="day" value="Sunday" />
+      <label for="Sunday">Sunday</label><br />
+      <label for="time">Time:</label><br />
+      <input type="radio" id="morning" name="time" value="Morning" />
+      <label for="morning">Morning</label><br />
+      <input type="radio" id="afternoon" name="time" value="Afternoon" />
+      <label for="afternoon">Afternoon</label><br />
+      <input type="radio" id="evening" name="time" value="Evening" />
+      <label for="evening">Evening</label><br />
+      <label for="locationfield">Location:</label>
+      <input type="text" id="locationfield" name="location" /><br /><br />
+      <input type="submit" name="submit" value="Submit" />
+      <input type="submit" name="add_another" value="Add another" />
+    </form>
+    <br /> -->
+  </body>
 </html>
