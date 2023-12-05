@@ -1,12 +1,26 @@
 from flask import Flask, render_template, request  # , send_from_directory
 import requests
 import os
-from connection import connect_to_database
+import configparser
+import psycopg2 as db
 
 API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 app = Flask(__name__)
 SCHEMA_NAME = 'test_new_schema'
+
+def connect_to_database():
+    dirname = os.getcwd()
+    config = configparser.ConfigParser()
+    config.read(os.path.join(dirname, 'dbtool.ini'))
+    conn = db.connect(dbname=os.getenv('DB_NAME'),
+                      user=os.getenv('DB_USER'), 
+                      password=os.getenv('DB_PASSWORD'),
+                      host=os.getenv('DB_HOST'),
+                      port=os.getenv('DB_PORT'),
+                      client_encoding=os.getenv('DB_CLIENT_ENCODING'))
+    curs = conn.cursor()
+    return curs, config, conn
 
 with app.app_context():
     (curs, config, conn) = connect_to_database()
