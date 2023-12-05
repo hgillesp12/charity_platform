@@ -85,7 +85,7 @@ def send_to_profile():
 @app.route('/register')
 def send_to_register():
     return render_template("register.html",
-                           message="Enter charity registration number")
+                           message="Login with your charity registration number")
 
 
 def check_charity_reg_number(number):
