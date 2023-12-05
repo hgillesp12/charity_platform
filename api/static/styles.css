@@ -19,9 +19,6 @@ body {
   background-color: #d9d9d9; /* Light gray card background */
   border-radius: 10px; /* Rounded corners for the card */
 }
-.custom-button {
-  border-radius: 10px; /* Rounded corners for the input and buttons */
-}
 .custom-input {
   background-color: #ededed; /* Light gray input background */
   margin-bottom: 10px; /* Space between input and buttons */
@@ -29,14 +26,15 @@ body {
   border-radius: 10px; /* Rounded corners for the input and buttons */
 }
 .custom-button {
+  border-radius: 10px; 
   box-shadow: 2px 5px 3px rgba(0, 0, 0, 0.2); /* Drop shadow for buttons */
 }
 /* change this to secondary button css styling when css is done properly */
-.btn-register {
+.btn-secondary1 {
   background-color: #999999; /* Color for register button */
 }
 /* change this to primary button css styling when css is done properly */
-.btn-login {
+.btn-primary1 {
   background-color: #676767; /* Color for login button */
 }
 .btn-login-page {
@@ -44,4 +42,12 @@ body {
   height: 50px;
   margin-left: 25px;
   margin-right: 25px;
+}
+.btn-register-page {
+  width: 150px;
+  height: 50px;
+  margin-left: 25px;
+  margin-right: 25px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

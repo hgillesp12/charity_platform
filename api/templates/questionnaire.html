@@ -18,6 +18,7 @@
           <p>Registration</p>
           <p>Hello {{ name }}</p>
           <p>Please complete the following form</p>
+          <hr />
           <div class="container">
             <form action="/schedule_submit/{{ name }}/{{ reg_number }}" method="post">
               <div class="row">
@@ -155,47 +156,29 @@
                     class="form-control"
                   />
                 </div>
+              </div>
+              <div class="container">
+                <div class="row justify-content-center">
+                  <div class="col-auto">
+                    <input
+                      class="btn custom-button btn-secondary1 btn-register-page"
+                      type="submit"
+                      name="add_another"
+                      value="Add another"
+                    />
+                    <input
+                      class="btn custom-button btn-primary1 btn-register-page"
+                      type="submit"
+                      name="submit"
+                      value="Submit"
+                    />
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- <p>{{ message }}</p>
-    <p>Please fill in the following schedule:</p>
-    <form action="/schedule_submit" method="post">
-      <br />
-      <label for="day">Day:</label><br />
-      <input type="radio" id="monday" name="day" value="Monday" />
-      <label for="monday">Monday</label><br />
-      <input type="radio" id="tuesday" name="day" value="Tuesday" />
-      <label for="tuesday">Tuesday</label><br />
-      <input type="radio" id="wednesday" name="day" value="Wednesday" />
-      <label for="wednesday">Wednesday</label><br />
-      <input type="radio" id="thursday" name="day" value="Thursday" />
-      <label for="thursday">Thursday</label><br />
-      <input type="radio" id="friday" name="day" value="Friday" />
-      <label for="friday">Friday</label><br />
-      <input type="radio" id="saturday" name="day" value="Saturday" />
-      <label for="saturday">Saturday</label><br />
-      <input type="radio" id="sunday" name="day" value="Sunday" />
-      <label for="sunday">Sunday</label><br />
-      <input type="radio" id="saturday" name="day" value="Saturday" />
-      <label for="saturday">Saturday</label><br />
-      <input type="radio" id="sunday" name="day" value="Sunday" />
-      <label for="Sunday">Sunday</label><br />
-      <label for="time">Time:</label><br />
-      <input type="radio" id="morning" name="time" value="Morning" />
-      <label for="morning">Morning</label><br />
-      <input type="radio" id="afternoon" name="time" value="Afternoon" />
-      <label for="afternoon">Afternoon</label><br />
-      <input type="radio" id="evening" name="time" value="Evening" />
-      <label for="evening">Evening</label><br />
-      <label for="locationfield">Location:</label>
-      <input type="text" id="locationfield" name="location" /><br /><br />
-      <input type="submit" name="submit" value="Submit" />
-      <input type="submit" name="add_another" value="Add another" />
-    </form>
-    <br /> -->
   </body>
 </html>
