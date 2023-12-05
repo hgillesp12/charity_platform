@@ -1,0 +1,47 @@
+body,
+html {
+  height: 100%; /* Full height */
+  margin: 0; /* Reset default margin */
+}
+body {
+  background-color: #ffffff; /* White background */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  padding: 0 15px; /* Padding to prevent overflow */
+}
+.center-card {
+  width: 100%;
+  max-width: 400px; /* Adjust width as per requirement */
+  margin-top: -10%; /* Move card slightly above center */
+}
+.custom-card {
+  background-color: #d9d9d9; /* Light gray card background */
+  border-radius: 10px; /* Rounded corners for the card */
+}
+.custom-button {
+  border-radius: 10px; /* Rounded corners for the input and buttons */
+}
+.custom-input {
+  background-color: #ededed; /* Light gray input background */
+  margin-bottom: 10px; /* Space between input and buttons */
+  width: 250px; /* Adjust width as per requirement */
+  border-radius: 10px; /* Rounded corners for the input and buttons */
+}
+.custom-button {
+  box-shadow: 2px 5px 3px rgba(0, 0, 0, 0.2); /* Drop shadow for buttons */
+}
+/* change this to secondary button css styling when css is done properly */
+.btn-register {
+  background-color: #999999; /* Color for register button */
+}
+/* change this to primary button css styling when css is done properly */
+.btn-login {
+  background-color: #676767; /* Color for login button */
+}
+.btn-login-page {
+  width: 100px;
+  height: 50px;
+  margin-left: 25px;
+  margin-right: 25px;
+}
