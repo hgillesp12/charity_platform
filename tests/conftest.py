@@ -15,7 +15,8 @@ def connect_to_database(schema_name=SCHEMA_NAME):
                       user=os.getenv('DB_USER'), 
                       password=os.getenv('DB_PASSWORD'),
                       host=os.getenv('DB_HOST'),
-                      port=os.getenv('DB_PORT'))
+                      port=os.getenv('DB_PORT'),
+                      client_encoding=os.getenv('DB_CLIENT_ENCODING'))
     curs = conn.cursor()
     curs.execute(config['create_schema']['new_schema'].replace('@schema_name@', schema_name))
     return curs, config
