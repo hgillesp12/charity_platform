@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request  # , send_from_directory
 import requests
 import os
+from datetime import datetime
 import configparser
 import psycopg2 as db
 
 API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
+SCHEMA_NAME = 'test_schema'
 
 app = Flask(__name__)
 SCHEMA_NAME = 'test_new_schema'
@@ -204,10 +206,13 @@ def schedule_submit(name, reg_number):
 @app.route('/bulletin_board', methods=["POST"])
 def post_message():
     message = request.form.get("message")
+    now = datetime.now()
+    sql_timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
+    params = (message, sql_timestamp)
 
     if 'cancel' in request.form:
         return render_template("main_page.html")
 
     if message:
-        # add message and name to the db
+        # add message, time and name to the db
         return render_template("main_page.html")
