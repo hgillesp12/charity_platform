@@ -33,6 +33,12 @@ jobs:
         run: pytest tests/*.py 
         env:
           REGISTERED_CHARITIES_API_KEY: ${{ secrets.REGISTERED_CHARITIES_API_KEY }}
+          DB_NAME: ${{ secrets.DB_NAME }} 
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_CLIENT_ENCODING: ${{ secrets.DB_CLIENT_ENCODING }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
   deploy-to-vercel:
     needs: run-unit-tests
