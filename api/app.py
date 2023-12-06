@@ -5,11 +5,10 @@ from datetime import datetime
 import configparser
 import psycopg2 as db
 
-API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
-SCHEMA_NAME = 'test_schema'
-
 app = Flask(__name__)
+
 SCHEMA_NAME = 'test_new_schema'
+API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 
 def connect_to_database():
     #dirname = os.getcwd()
