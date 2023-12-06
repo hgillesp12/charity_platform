@@ -174,6 +174,10 @@ def submit_new_schedule(name, reg_number):
     return render_template("questionnaire.html", name=name, reg_number=reg_number,
                            message="Submit a new schedule")
 
+@app.route('/main/<name>/<reg_number>')
+def back_home(name, reg_number):
+    return render_template("main_page.html", name=name, reg_number=reg_number)
+
 @app.route('/schedule_submit/<name>/<reg_number>', methods=['POST'])
 def schedule_submit(name, reg_number):
     day = request.form.get("day")

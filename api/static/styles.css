@@ -62,6 +62,17 @@ body {
   background-color: var(--secondary-color); /* Color for login button */
   color: white;
 }
+
+.btn-subtle {
+  background-color: var(--primary-color);
+  padding: 3px;
+  padding-inline: 10px;
+  border-radius: 10px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  box-shadow: 4px 4px 2px 0 rgba(0,0,0,0.8); /* Soft edge / shadow */
+}
+
 .btn-login-page {
   width: 100px;
   height: 50px;
