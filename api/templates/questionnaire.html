@@ -12,142 +12,206 @@
     />
   </head>
   <body>
-    <div class="center-card">
-      <div class="card custom-card">
-        <div class="card-body">
-          <p>Registration</p>
-          <p>Hello {{ name }}</p>
-          <p>Please complete the following form</p>
-          <hr />
-          <div class="container">
-            <form action="/schedule_submit/{{ name }}/{{ reg_number }}" method="post">
-              <div class="row">
-                <!-- Left column for week days -->
-                <div class="col">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="day"
-                      id="monday"
-                      value="Monday"
-                    />
-                    <label class="form-check-label" for="monday">Monday</label>
+    <div class="navbar">
+      <div class="navbar-links">
+        <a href="#link1">Link 1</a>
+        <a href="#link2">Link 2</a>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="center-card">
+        <div class="card custom-card">
+          <div class="card-body text-center">
+            <p>Registration</p>
+            <p>Hello {{ name }}</p>
+            <p>Please complete the following form</p>
+            <hr />
+            <div class="container">
+              <form
+                action="/schedule_submit/{{ name }}/{{ reg_number }}"
+                method="post"
+              >
+                <div class="row form-margin">
+                  <!-- Left column for week days -->
+                  <div class="col text-left">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="day"
+                        id="monday"
+                        value="Monday"
+                      />
+                      <label class="form-check-label" for="monday"
+                        >Monday</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="day"
+                        id="tuesday"
+                        value="Tuesday"
+                      />
+                      <label class="form-check-label" for="tuesday"
+                        >Tuesday</label
+                      >
+                    </div>
+                    <!-- Add other weekdays here -->
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="day"
+                        id="wednesday"
+                        value="Wednesday"
+                      />
+                      <label class="form-check-label" for="wednesday"
+                        >Wednesday</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="day"
+                        id="thursday"
+                        value="Thursday"
+                      />
+                      <label class="form-check-label" for="thursday"
+                        >Thursday</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="day"
+                        id="friday"
+                        value="Friday"
+                      />
+                      <label class="form-check-label" for="friday"
+                        >Friday</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="day"
+                        id="saturday"
+                        value="Saturday"
+                      />
+                      <label class="form-check-label" for="saturday"
+                        >Saturday</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="day"
+                        id="sunday"
+                        value="Sunday"
+                      />
+                      <label class="form-check-label" for="sunday"
+                        >Sunday</label
+                      >
+                    </div>
                   </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="day"
-                      id="tuesday"
-                      value="Tuesday"
-                    />
-                    <label class="form-check-label" for="tuesday"
-                      >Tuesday</label
-                    >
-                  </div>
-                  <!-- Add other weekdays here -->
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="day"
-                      id="wednesday"
-                      value="Wednesday"
-                    />
-                    <label class="form-check-label" for="wednesday"
-                      >Wednesday</label
-                    >
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="day"
-                      id="thursday"
-                      value="Thursday"
-                    />
-                    <label class="form-check-label" for="thursday"
-                      >Thursday</label
-                    >
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="day"
-                      id="friday"
-                      value="Friday"
-                    />
-                    <label class="form-check-label" for="friday">Friday</label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="day"
-                      id="saturday"
-                      value="Saturday"
-                    />
-                    <label class="form-check-label" for="saturday"
-                      >Saturday</label
-                    >
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="day"
-                      id="sunday"
-                      value="Sunday"
-                    />
-                    <label class="form-check-label" for="sunday">Sunday</label>
-                  </div>
-                </div>
 
-                <!-- Right column for time of day -->
-                <div class="col">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="timeOfDay"
-                      id="morning"
-                      value="morning"
-                    />
-                    <label class="form-check-label" for="morning"
-                      >Morning</label
-                    >
-                  </div>
-                  <!-- Add other times of day here -->
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="timeOfDay"
-                      id="afternoon"
-                      value="afternoon"
-                    />
-                    <label class="form-check-label" for="afternoon"
-                      >Afternoon</label
-                    >
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="timeOfDay"
-                      id="evening"
-                      value="evening"
-                    />
-                    <label class="form-check-label" for="evening"
-                      >Evening</label
-                    >
+                  <!-- Right column for time of day -->
+                  <div class="col text-left">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="timeOfDay"
+                        id="morning"
+                        value="morning"
+                      />
+                      <label class="form-check-label" for="morning"
+                        >Morning</label
+                      >
+                    </div>
+                    <!-- Add other times of day here -->
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="timeOfDay"
+                        id="afternoon"
+                        value="afternoon"
+                      />
+                      <label class="form-check-label" for="afternoon"
+                        >Afternoon</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="timeOfDay"
+                        id="evening"
+                        value="evening"
+                      />
+                      <label class="form-check-label" for="evening"
+                        >Evening</label
+                      >
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col">
+                <div class="row justify-content-center">
+                  <select class="dropdown" id="dropdown" name="dropdown">
+                    <option value="" disabled selected>Borough</option>
+                    <option value="barkinganddagenham">
+                      Barking and Dagenham
+                    </option>
+                    <option value="barnet">Barnet</option>
+                    <option value="bexley">Bexley</option>
+                    <option value="brent">Brent</option>
+                    <option value="bromley">Bromley</option>
+                    <option value="camden">Camden</option>
+                    <option value="cityoflondon">City of London</option>
+                    <option value="croydon">Croydon</option>
+                    <option value="ealing">Ealing</option>
+                    <option value="enfield">Enfield</option>
+                    <option value="greenwich">Greenwich</option>
+                    <option value="hackney">Hackney</option>
+                    <option value="hammersmithandfulham">
+                      Hammersmith and Fulham
+                    </option>
+                    <option value="haringey">Haringey</option>
+                    <option value="harrow">Harrow</option>
+                    <option value="havering">Havering</option>
+                    <option value="hillingdon">Hillingdon</option>
+                    <option value="hounslow">Hounslow</option>
+                    <option value="islington">Islington</option>
+                    <option value="kensingtonandchelsea">
+                      Kensington and Chelsea
+                    </option>
+                    <option value="kingstonuponthames">
+                      Kingston upon Thames
+                    </option>
+                    <option value="lambeth">Lambeth</option>
+                    <option value="lewisham">Lewisham</option>
+                    <option value="merton">Merton</option>
+                    <option value="newham">Newham</option>
+                    <option value="redbridge">Redbridge</option>
+                    <option value="richmonduponthames">
+                      Richmond upon Thames
+                    </option>
+                    <option value="southwark">Southwark</option>
+                    <option value="sutton">Sutton</option>
+                    <option value="towerhamlets">Tower Hamlets</option>
+                    <option value="walthamforest">Waltham Forest</option>
+                    <option value="wandsworth">Wandsworth</option>
+                    <option value="westminster">Westminster</option>
+
+                    <!-- Add more options as needed -->
+                  </select>
+                  <!-- <div class="col">
                   <label for="locationfield">Location:</label>
                   <input
                     type="text"
@@ -155,30 +219,37 @@
                     name="location"
                     class="form-control"
                   />
+                </div> -->
                 </div>
-              </div>
-              <div class="container">
-                <div class="row justify-content-center">
-                  <div class="col-auto">
-                    <input
-                      class="btn custom-button btn-secondary1 btn-register-page"
-                      type="submit"
-                      name="add_another"
-                      value="Add another"
-                    />
-                    <input
-                      class="btn custom-button btn-primary1 btn-register-page"
-                      type="submit"
-                      name="submit"
-                      value="Submit"
-                    />
+                <hr />
+                <div class="row">
+                  <div class="container">
+                    <div class="row justify-content-center">
+                      <div class="col">
+                        <input
+                          class="btn custom-button btn-secondary1 btn-register-page"
+                          type="submit"
+                          name="add_another"
+                          value="Add another"
+                        />
+                        <input
+                          class="btn custom-button btn-primary1 btn-register-page"
+                          type="submit"
+                          name="submit"
+                          value="Submit"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>

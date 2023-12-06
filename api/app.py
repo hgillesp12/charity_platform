@@ -61,7 +61,7 @@ with app.app_context():
 
     conn.close()
 
-
+# THIS SHOULD BE REDUNDANT
 @app.route('/')
 def default_home():
     return render_template("index.html")
@@ -81,7 +81,7 @@ def send_to_post():
 def send_to_profile():
     return render_template("profile_page.html")
 
-
+# This should just be the start pace
 @app.route('/register')
 def send_to_register():
     return render_template("register.html",
@@ -101,6 +101,13 @@ def check_charity_reg_number(number):
     else:
         return None
 
+# TO DELETE BEFORE MERGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+@app.route('/questionnaire')
+def send_to_questionnaire():
+    return render_template("questionnaire.html")
+# TO DELETE BEFORE MERGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+# BELOW SHOULD BE REDUNDANT
 @app.route('/login')
 def send_to_login():
     return render_template("login.html")
@@ -110,11 +117,11 @@ def send_to_profile_page():
     reg_number = request.form.get("reg_number")
     response = check_charity_reg_number(reg_number)
     if not response:
-        return render_template("login.html", 
+        return render_template("register.html", 
                                message="Invalid charity ID number! Try again.")
     charity_info = response.json()
     name = charity_info["charity_name"].title()
-    return render_template("profile_page.html", name=name, reg_number=reg_number)
+    return render_template("main_page.html", name=name, reg_number=reg_number)
 
 @app.route('/registration_submit', methods=["POST"])
 def reg_number_submit():
@@ -138,7 +145,7 @@ def reg_number_submit():
                 '@schema_name@', SCHEMA_NAME), [reg_number]
             )
             if (curs.rowcount == 1):
-                return render_template("index.html", 
+                return render_template("register.html", 
                                        message="Charity already registered. Please log in.")
         except Exception as e:
             print(f"Error: {e}")

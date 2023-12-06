@@ -1,41 +1,66 @@
+:root {
+  --primary-color: #999999; /* Example primary color */
+  --secondary-color: #676767; /* Example secondary color */
+  --background-color: #d9d9d9; /* Example accent color */
+  --input-background-color: #ededed; /* Example input background color */
+  --overall-bg-color: #ffffff; /* Example background color */
+}
+
 body,
 html {
   height: 100%; /* Full height */
   margin: 0; /* Reset default margin */
 }
 body {
-  background-color: #ffffff; /* White background */
+  background-color: var(--overall-bg-color); /* White background */
   display: flex;
   justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
   padding: 0 15px; /* Padding to prevent overflow */
+}
+.main-content {
+  padding-top: 250px; /* Space below the navbar */
+}
+.margin-row {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 .center-card {
   width: 100%;
   max-width: 400px; /* Adjust width as per requirement */
-  margin-top: -10%; /* Move card slightly above center */
+  /* margin-top: -10%; Move card slightly above center */
 }
 .custom-card {
-  background-color: #d9d9d9; /* Light gray card background */
+  background-color: var(--background-color); /* Light gray card background */
   border-radius: 10px; /* Rounded corners for the card */
+  box-shadow: 8px 8px 3px 0 rgba(0,0,0,0.5); /* Soft edge / shadow */
+  padding: 20px; /* Padding for the card */
 }
 .custom-input {
-  background-color: #ededed; /* Light gray input background */
+  background-color: var(--input-background-color); /* Light gray input background */
   margin-bottom: 10px; /* Space between input and buttons */
   width: 250px; /* Adjust width as per requirement */
+  height: 50px; /* Adjust height as per requirement */
   border-radius: 10px; /* Rounded corners for the input and buttons */
 }
 .custom-button {
-  border-radius: 10px; 
-  box-shadow: 2px 5px 3px rgba(0, 0, 0, 0.2); /* Drop shadow for buttons */
+  border-radius: 10px;
+  box-shadow: 8px 8px 2px 0 rgba(0,0,0,0.8); /* Soft edge / shadow */
+  display: inline-flex; /* Use inline-flex for <a> elements */
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px; /* Adjust horizontal padding as needed */
+  text-decoration: none; /* Optional: removes underline from link */
+  color: inherit; /* Optional: inherits text color from parent */
+  /* Add other styles like font-size, background-color as needed */
 }
 /* change this to secondary button css styling when css is done properly */
 .btn-secondary1 {
-  background-color: #999999; /* Color for register button */
+  background-color: var(--primary-color); /* Color for register button */
 }
 /* change this to primary button css styling when css is done properly */
 .btn-primary1 {
-  background-color: #676767; /* Color for login button */
+  background-color: var(--secondary-color); /* Color for login button */
+  color: white;
 }
 .btn-login-page {
   width: 100px;
@@ -44,10 +69,73 @@ body {
   margin-right: 25px;
 }
 .btn-register-page {
-  width: 150px;
-  height: 50px;
   margin-left: 25px;
   margin-right: 25px;
   margin-top: 10px;
   margin-bottom: 10px;
+  padding: 15px;
+}
+.form-margin {
+  margin-left: 10px;
+}
+.dropdown {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  width: 250px;
+  height: 50px;
+  text-align: center;
+  background-color: var(--input-background-color);
+  border: none;
+}
+.navbar {
+  background-color: rgba(51, 51, 51, 0.2); /* Navbar background color */
+  backdrop-filter: blur(20px); /* Blurry effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Soft edge / shadow */
+  color: white;
+  height: 75px; /* Adjust height as needed */
+  position: fixed; /* Make the navbar fixed at the top */
+  top: 0;
+  width: 100%;
+  z-index: 1000; /* Ensures navbar stays on top */
+  display: flex; /* Enables flexbox */
+  justify-content: flex-end; /* Aligns children (links) to the right */
+  align-items: center; /* Centers children vertically */
+  padding-right: 20px;
+}
+
+.navbar-links {
+  margin-top: 10px;
+  text-align: right; /* Aligns links to the right */
+  height: 100%;
+}
+
+.navbar-links a {
+  display: inline-block; /* Inline block for links */
+  text-align: right; /* Aligns links to the right */
+  padding: 10px 20px; /* Padding for link spacing */
+  color: black;
+  text-decoration: none; /* Removes underline from links */
+  position: relative; /* Required for positioning the pseudo-element */
+  overflow: hidden; 
+}
+
+.navbar-links a:hover {
+  color: black;
+}
+
+.navbar-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px; /* Thickness of the underline */
+  background-color: black; /* Color of the underline */
+  transform: translateY(100%); /* Initially positioned below the text */
+  transition: transform 0.3s ease; /* Smooth transition for the underline */
+}
+
+.navbar-links a:hover::after {
+  transform: translateY(0); /* Moves the underline up on hover */
 }
