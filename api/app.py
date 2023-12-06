@@ -74,9 +74,10 @@ def send_to_main():
     return render_template("main_page.html")
 
 
-@app.route('/post_message')
-def send_to_post():
-    return render_template("post_message.html")
+@app.route('/post_message/<name>/<reg_number>')
+def post_new_message(name, reg_number):
+    return render_template("post_message.html", name=name, reg_number=reg_number,
+                           content="Post a new message!")
 
 
 @app.route('/profile')
@@ -204,17 +205,41 @@ def schedule_submit(name, reg_number):
                                    another schedule.")
 
 
-
-@app.route('/bulletin_board', methods=["POST"])
-def post_message():
+@app.route('/post_message/<name>/<reg_number>', methods=["POST"])
+def post_message(name, reg_number):
     message = request.form.get("message")
-    # now = datetime.now()
-    # sql_timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
-    # params = (message, sql_timestamp)
-
+    now = datetime.now()
+    sql_timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
+    
     if 'cancel' in request.form:
-        return render_template("main_page.html")
+        return render_template("profile_page.html",
+                               name=name,
+                               reg_number=reg_number)
 
-    if message:
-        # add message, time and name to the db
-        return render_template("main_page.html")
+    if not message:
+        return render_template("post_message.html",
+                               name=name,
+                               reg_number=reg_number,
+                               content="Add a message to post.")
+    
+    try:
+        curs, config, conn = connect_to_database()
+        curs.execute(config['insert_into']['message_table'].replace(
+            '@schema_name@', SCHEMA_NAME), [reg_number, message, sql_timestamp]
+        )
+        if curs.rowcount == 1:
+            conn.commit()
+            return render_template("profile_page.html",
+                                   name=name,
+                                   reg_number=reg_number)
+        else:
+            return render_template("post_message.html",
+                                   name=name,
+                                   reg_number=reg_number, 
+                                   content="Message could not be posted.")
+    except Exception as e:
+        print(f"Error: {e}")
+        return render_template("post_message.html",
+                               name=name,
+                               reg_number=reg_number, 
+                               content="Message could not be posted.")
