@@ -12,9 +12,11 @@ app = Flask(__name__)
 SCHEMA_NAME = 'test_new_schema'
 
 def connect_to_database():
-    dirname = os.getcwd()
+    #dirname = os.getcwd()
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    config_path = os.path.join(script_dir, 'dbtool.ini')
     config = configparser.ConfigParser()
-    config.read(os.path.join(dirname, 'dbtool.ini'))
+    config.read(config_path)
     conn = db.connect(dbname=os.getenv('DB_NAME'),
                       user=os.getenv('DB_USER'), 
                       password=os.getenv('DB_PASSWORD'),
