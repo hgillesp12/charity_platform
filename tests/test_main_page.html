@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Folium Map</title>
-    <!-- Add any additional CSS or styling links here -->
+    <title>Map Page</title>
+    <!-- Include any additional styles or scripts if needed -->
 </head>
 <body>
-    <!-- The following line injects the Folium map HTML string into the page -->
-    {{ map_html_string | safe }}
 
-    <!-- Add any additional HTML content or scripts here -->
+<!-- Add an iframe to embed the map HTML -->
+<iframe srcdoc="{{ map_html_string }}" width="100%" height="600" frameborder="0"></iframe>
+
 </body>
 </html>
