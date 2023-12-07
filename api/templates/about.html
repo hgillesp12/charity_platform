@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Bootstrap CSS CDN -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="navbar-links">
+        <a href="/about">About the idea</a>
+        <a href="#link2">Link 2</a>
+      </div>
+    </div>
+    <div class="main-content">
+      <h1>Our vision</h1>
+      <p>At the heart of [CollaborAid] is the belief that collaboration is the key to creating a more effective and impactful humanitarian ecosystem.
+        The current competitive model often discourages coordination and information sharing, resulting in inefficiencies. Our platform is designed to
+        provide a space for charities to seamlessly collaborate and share information to eliminate duplications and bridge gaps in humanitarian action.</p>
+      <div id="features">
+        <h1>Key Features</h1>
+        <ul>
+            <li><strong>Schedule:</strong> Add and manage weekly events through our scheduling system.</li>
+            <li><strong>Bulletin Board:</strong> Stay informed with the latest updates from charities across the city.</li>
+            <li><strong>Interactive Map:</strong> Explore collaboration possibilities in your area!</li>
+        </ul>
+      <h1>References:</h1>
+      <ol>
+          <li>Meier, P. (2011) “New information technologies and their impact on the humanitarian sector,” International Review of the Red Cross, 93(884), pp. 1239-1263</li>
+          <li>Stephenson, M. (2017) "The Theory and Practice of International Humanitarian Coordination," in Palgrave handbook on inter-organizational relations in world politics, Springer Nature, London, UK, pp. 485-502</li>
+          <li>Ramalingam, B. and Barnett, M. (2010), “The Humanitarian’s Dilemma: Collective Action or Inaction in International Relief?” Overseas Development Institute</li>
+          <li>Active Learning Network for Accountability and Performance in Humanitarian Action (2015), “Working together in the field for effective humanitarian response,” Working Paper, pp. 1-3</li>
+      </ol>
+    </div>
+    <!-- Bootstrap JS, Popper.js, and jQuery CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document
+        .getElementById('registerBtn')
+        .addEventListener('click', function () {
+          document.getElementById('myForm').action = '/registration_submit';
+          document.getElementById('myForm').submit();
+        });
+
+      document
+        .getElementById('loginBtn')
+        .addEventListener('click', function () {
+          document.getElementById('myForm').action = '/login_submit';
+          document.getElementById('myForm').submit();
+        });
+    </script>
+  </body>
+</html>

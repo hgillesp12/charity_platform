@@ -68,6 +68,10 @@ def send_to_register():
     return render_template("register.html",
                            message="Login with your charity registration number")
 
+@app.route('/about')
+def send_to_about():
+    return render_template("about.html")
+
 
 @app.route('/post_message/<name>/<reg_number>')
 def post_new_message(name, reg_number):
