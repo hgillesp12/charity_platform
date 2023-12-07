@@ -64,30 +64,15 @@ with app.app_context():
 
 
 @app.route('/')
-def default_home():
-    return render_template("index.html")
-
-
-@app.route('/main')
-def send_to_main():
-    return render_template("main_page.html")
+def send_to_register():
+    return render_template("register.html",
+                           message="Login with your charity registration number")
 
 
 @app.route('/post_message/<name>/<reg_number>')
 def post_new_message(name, reg_number):
     return render_template("post_message.html", name=name, reg_number=reg_number,
                            content="Post a new message!")
-
-
-@app.route('/profile')
-def send_to_profile():
-    return render_template("profile_page.html")
-
-
-@app.route('/register')
-def send_to_register():
-    return render_template("register.html",
-                           message="Login with your charity registration number")
 
 
 def check_charity_reg_number(number):
@@ -102,20 +87,22 @@ def check_charity_reg_number(number):
     else:
         return None
 
-@app.route('/login')
-def send_to_login():
-    return render_template("login.html")
 
 @app.route('/login_submit', methods=["POST"])
 def send_to_profile_page():
     reg_number = request.form.get("reg_number")
     response = check_charity_reg_number(reg_number)
     if not response:
-        return render_template("login.html", 
+        return render_template("register.html", 
                                message="Invalid charity ID number! Try again.")
     charity_info = response.json()
     name = charity_info["charity_name"].title()
-    return render_template("profile_page.html", name=name, reg_number=reg_number)
+    all_messages = get_all_messages()
+    return render_template("main_page.html", 
+                            name=name,
+                            reg_number=reg_number,
+                            all_messages=all_messages
+                            )
 
 @app.route('/registration_submit', methods=["POST"])
 def reg_number_submit():
@@ -147,7 +134,7 @@ def reg_number_submit():
         if (curs.rowcount == 1):
             conn.close()
             logging.info("Charity %s is already registered", reg_number)
-            return render_template("index.html", message=already_registerd)
+            return render_template("register.html", message=already_registerd)
     except Exception as e:
         logging.error(e)
         conn.rollback
@@ -179,6 +166,12 @@ def reg_number_submit():
 def submit_new_schedule(name, reg_number):
     return render_template("questionnaire.html", name=name, reg_number=reg_number,
                            message="Submit a new schedule")
+
+
+@app.route('/main/<name>/<reg_number>')
+def back_home(name, reg_number):
+    all_messages = get_all_messages()
+    return render_template("main_page.html", name=name, reg_number=reg_number, all_messages=all_messages)
 
 
 def get_all_messages():
@@ -272,9 +265,12 @@ def post_message(name, reg_number):
     error_message = "Message could not be posted."
 
     if 'cancel' in request.form:
-        return render_template("profile_page.html",
-                               name=name,
-                               reg_number=reg_number)
+        all_messages = get_all_messages()
+        return render_template("main_page.html",
+                                name=name,
+                                reg_number=reg_number,
+                                all_messages=all_messages
+                                )
 
     if not message:
         logging.info("Missing message content")
@@ -294,9 +290,12 @@ def post_message(name, reg_number):
             conn.commit()
             conn.close()
             logging.info("Added message to database")
-            return render_template("profile_page.html",
+            all_messages = get_all_messages()
+            return render_template("main_page.html",
                                    name=name,
-                                   reg_number=reg_number)
+                                   reg_number=reg_number,
+                                   all_messages=all_messages
+                                   )
         else:
             conn.close()
             logging.info("Unable to add message from %s to the database", reg_number)

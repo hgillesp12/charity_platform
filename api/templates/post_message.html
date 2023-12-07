@@ -1,17 +1,77 @@
 <!DOCTYPE html>
-<html>  
-    <head>
-        <link rel="icon" href="data:,">
-    </head>
-    <body>
-        <p>{{ content }}</p>
-        <p>From: {{ name }}</p>
-        <form action="/post_message/{{ name }}/{{ reg_number }}" id="usrform" method="post">
-            <br>
-            <label for="message">Message:</label>
-            <textarea name="message" form="usrform" maxlength="1000" placeholder="Enter message here..."></textarea><br><br>
-            <input type="submit" name="post" value="Post">
-            <input type="submit" name="cancel" value="Cancel">
-        </form><br> 
-    </body>
+<html>
+  <head>
+    <!-- Bootstrap CSS CDN -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="navbar-links">
+        <a href="#about">About the idea</a>
+        <a href="#link2">Link 2</a>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="center-card">
+        <div class="card custom-card">
+          <div class="card-body">
+            <form
+              action="/post_message/{{ name }}/{{ reg_number }}"
+              id="usrform"
+              method="post"
+            >
+              <div class="row justify-content-center">
+                <p>{{message}}</p>
+                <div class="text-center">
+                  <p>{{ content }}</p>
+                  <p>From: {{ name }}</p>
+                </div>
+                <div>
+                  <textarea
+                    name="message"
+                    form="usrform"
+                    maxlength="1000"
+                    placeholder="Enter message here..."
+                    class="form-control custom-input"
+                  ></textarea>
+                </div>
+              </div>
+              <div class="d-flex justify-content-center">
+                <button
+                  id="registerBtn"
+                  class="btn custom-button btn-secondary1 btn-login-page"
+                  type="submit"
+                  name="cancel"
+                  value="Cancel"
+                >
+                  Cancel
+                </button>
+                <button
+                  id="loginBtn"
+                  class="btn custom-button btn-primary1 btn-login-page"
+                  type="submit"
+                  name="post"
+                  value="Post"
+                >
+                  Post
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
 </html>

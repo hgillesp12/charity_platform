@@ -1,13 +1,73 @@
 <!DOCTYPE html>
-<html>  
-    <head>
-        <link rel="icon" href="data:,">
-    </head>
-    <body>
-        <h1>MAIN PAGE</h1>
-        <a href="/post_message/{{ name }}/{{ reg_number }}">Post message</a>
-        <h1>Message Board</h1>
-        <p>need to refactor</p>
-        <p>{{ all_messages }}</p>
-    </body>
+<html>
+  <head>
+    <!-- Bootstrap CSS CDN -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="navbar-links">
+        <a href="#link1">About the idea</a>
+        <a href="#link2">Link 2</a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container main-content">
+      <!-- Map Section -->
+      <div class="row margin-row">
+        <div class="col">
+          <div class="card custom-card">
+            <div class="card-body text-center">Map to go here</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bulletin Board Section -->
+      <div class="row margin-row">
+        <div class="col-md-6 col-lg-6">
+          <h1>Bulletin board</h1>
+        </div>
+        <div class="col-md-6 col-lg-6 text-right">
+          <a
+            class="btn custom-button btn-primary1 btn-register-page"
+            href="/post_message/{{ name }}/{{ reg_number }}"
+          >
+            Post message
+          </a>
+          <a
+            class="btn custom-button btn-primary1 btn-register-page"
+            href="/questionnaire/{{ name }}/{{ reg_number }}"
+          >
+            Add new schedule
+          </a>
+        </div>
+      </div>
+
+      <!-- Messages Section -->
+      <div class="row margin-row">
+        <div class="col">
+          <div class="card custom-card">
+            <div class="card-body text-center">
+              Messages to go here
+              <p>{{ all_messages }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
 </html>
