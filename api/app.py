@@ -97,21 +97,43 @@ def send_to_profile_page():
                                message="Invalid charity ID number! Try again.")
     charity_info = response.json()
     name = charity_info["charity_name"].title()
-    all_messages = get_all_messages()
-    return render_template("main_page.html", 
-                            name=name,
-                            reg_number=reg_number,
-                            all_messages=json.loads(all_messages)
-                            )
+    register_first = "Registration not found - please register first"
+    
+    # add check to make sure the charity logging in is already registered
+    curs, config, conn = connect_to_database()
+    try:
+        # Check if the charity is already in the database first
+        curs.execute(config['query']['select_charity_by_number'].replace(
+            '@schema_name@', SCHEMA_NAME), [reg_number]
+        )
+        if (curs.rowcount == 1):
+            conn.close()
+            logging.info("Charity %s successfully logged in", reg_number)
+            all_messages = get_all_messages()
+            return render_template("main_page.html", 
+                                    name=name,
+                                    reg_number=reg_number,
+                                    all_messages=json.loads(all_messages)
+                                    )
+        else:
+            conn.close()
+            logging.info("Charity %s tried to log in but is not yet registered", reg_number)
+            return render_template("register.html", message=register_first)  
+    except Exception as e:
+        logging.error(e)
+        conn.rollback
+        conn.close()
+        return render_template("register.html", message=register_first) 
+    
 
 @app.route('/registration_submit', methods=["POST"])
 def reg_number_submit():
     reg_number = request.form.get("reg_number")
     response = check_charity_reg_number(reg_number)
     
-    invalid_message = "Invalid registration number! Please try again."
-    already_registerd = "Your charity is already registered. Please log in."
-    unknown_error = "Unkown error. Please try again."
+    invalid_message = "Invalid registration number - please try again"
+    already_registerd = "Your charity is already registered - please log in"
+    unknown_error = "Unkown error - please try again"
 
     if not response:
         logging.info("Received invalid registration number %s", reg_number)
@@ -150,7 +172,10 @@ def reg_number_submit():
             conn.commit()
             conn.close()
             logging.info("Added charity %s %s to the database", name, reg_number)
-            return render_template("questionnaire.html", name=name, reg_number=reg_number)
+            return render_template("questionnaire.html", 
+                                   name=name, 
+                                   reg_number=reg_number, 
+                                   message="Please complete the following form")
         else:
             conn.close()
             logging.error("Unable to add %s %s to the database", name, reg_number)
@@ -164,7 +189,9 @@ def reg_number_submit():
 
 @app.route('/questionnaire/<name>/<reg_number>')
 def submit_new_schedule(name, reg_number):
-    return render_template("questionnaire.html", name=name, reg_number=reg_number,
+    return render_template("questionnaire.html", 
+                           name=name, 
+                           reg_number=reg_number,
                            message="Submit a new schedule")
 
 
@@ -203,9 +230,9 @@ def schedule_submit(name, reg_number):
     time = request.form.get("timeOfDay")
     location = request.form.get("location")
 
-    missing_data = "Missing data - please fill in all fields."
-    not_added_correct = "Schedule not added successfully. Please try again."
-    successful_add = "Schedule added. Add another."
+    missing_data = "Missing data - please fill in all fields"
+    not_added_correct = "Schedule not added - please try again"
+    successful_add = "Schedule added"
 
     if not (day and time and location):
         logging.info("Missing data in schedule submission: %s, %s, %s", day, time, location)
