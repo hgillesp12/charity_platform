@@ -24,7 +24,7 @@
           <div class="card-body text-center">
             <p>Registration</p>
             <p>Hello {{ name|replace('%20', ' ') }}</p>
-            <p>Please complete the following form</p>
+            <p>{{ message }}</p>
             <hr />
             <div class="container">
               <form
@@ -163,8 +163,8 @@
                   </div>
                 </div>
                 <div class="row justify-content-center">
-                  <select class="dropdown" id="dropdown" name="dropdown">
-                    <option value="" disabled selected>Borough</option>
+                  <select class="dropdown" id="dropdown" name="location">
+                    <option value="" disabled selected>Select Borough</option>
                     <option value="Barking and Dagenham">
                       Barking and Dagenham
                     </option>
