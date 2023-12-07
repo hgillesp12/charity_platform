@@ -39,7 +39,7 @@
         <div class="col-md-6 col-lg-6 text-right">
           <a
             class="btn custom-button btn-primary1 btn-register-page"
-            href="/post_message"
+            href="/post_message/{{ name }}/{{ reg_number }}"
           >
             Post message
           </a>
@@ -56,7 +56,10 @@
       <div class="row margin-row">
         <div class="col">
           <div class="card custom-card">
-            <div class="card-body text-center">Messages to go here</div>
+            <div class="card-body text-center">
+              Messages to go here
+              <p>{{ all_messages }}</p>
+            </div>
           </div>
         </div>
       </div>

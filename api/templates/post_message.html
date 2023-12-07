@@ -22,17 +22,16 @@
       <div class="center-card">
         <div class="card custom-card">
           <div class="card-body">
-            <form action="/bulletin_board" id="usrform" method="post">
+            <form
+              action="/post_message/{{ name }}/{{ reg_number }}"
+              id="usrform"
+              method="post"
+            >
               <div class="row justify-content-center">
                 <p>{{message}}</p>
-                <div>
-                  <input
-                    type="text"
-                    id="sender"
-                    name="charity_name"
-                    class="form-control custom-input"
-                    placeholder="From"
-                  />
+                <div class="text-center">
+                  <p>{{ content }}</p>
+                  <p>From: {{ name }}</p>
                 </div>
                 <div>
                   <textarea
@@ -76,28 +75,3 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
-
-<!-- <!DOCTYPE html>
-<html>
-  <head>
-    <link rel="icon" href="data:," />
-  </head>
-  <body>
-    <form action="/bulletin_board" id="usrform" method="post">
-      <br />
-      <label for="sender">From:</label>
-      <input type="text" id="sender" name="charity_name" /><br /><br />
-      <label for="message">Message:</label>
-      <textarea
-        name="message"
-        form="usrform"
-        maxlength="1000"
-        placeholder="Enter message here..."
-      ></textarea
-      ><br /><br />
-      <input type="submit" name="post" value="Post" />
-      <input type="submit" name="cancel" value="Cancel" />
-    </form>
-    <br />
-  </body>
-</html> -->
