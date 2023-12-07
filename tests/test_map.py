@@ -212,7 +212,6 @@ def test_inserting_multiple_items_into_schedule_table_to_the_map(connect_to_data
     with open(html_file_path, "w", encoding="utf-8") as html_file:
         html_file.write(map_html_string)
 
-    # Render the main_page.html template with the map HTML string and events data
     #assert(render_template("test_main_page.html", map_html_string=map_html_string))
 
     # Use app.test_request_context() to render the template within the app context
