@@ -184,16 +184,17 @@ def submit_new_schedule(name, reg_number):
 def get_all_messages():
     (curs, config, conn) = connect_to_database()
     message_table = {
-        "sender": [],
+        "sender_name": [],
         "content": [],
         "date_time": []
     }
     try:
-        curs.execute(config['query']['select_all_messages_order_by_timestamp_desc'].replace('@schema_name@', SCHEMA_NAME))
-        for rec in curs:
-            message_table["sender"].append(rec[1])
-            message_table["content"].append(rec[2])
-            message_table["date_time"].append(rec[3].strftime("%d/%m/%Y, %H:%M:%S"))
+        curs.execute(config['query']['select_all_message_with_names_order_by_timestamp_desc'].replace('@schema_name@', SCHEMA_NAME))
+        all_messages = curs.fetchall()
+        for message_info in all_messages:
+            message_table["sender_name"].append(message_info[4])
+            message_table["content"].append(message_info[2])
+            message_table["date_time"].append(message_info[3].strftime("%d/%m/%Y, %H:%M:%S"))
         conn.close()
         message_json = json.dumps(message_table, indent = 4) 
         return message_json
