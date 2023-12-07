@@ -101,7 +101,6 @@ def send_to_profile_page():
                                message="Invalid charity ID number! Try again.")
     charity_info = response.json()
     name = charity_info["charity_name"].title()
-
     register_first = "Registration not found - please register first"
     
     # add check to make sure the charity logging in is already registered
@@ -118,7 +117,7 @@ def send_to_profile_page():
             return render_template("main_page.html", 
                                     name=name,
                                     reg_number=reg_number,
-                                    all_messages=all_messages
+                                    all_messages=json.loads(all_messages)
                                     )
         else:
             conn.close()
@@ -129,7 +128,7 @@ def send_to_profile_page():
         conn.rollback
         conn.close()
         return render_template("register.html", message=register_first) 
-
+    
 
 @app.route('/registration_submit', methods=["POST"])
 def reg_number_submit():
@@ -203,7 +202,7 @@ def submit_new_schedule(name, reg_number):
 @app.route('/main/<name>/<reg_number>')
 def back_home(name, reg_number):
     all_messages = get_all_messages()
-    return render_template("main_page.html", name=name, reg_number=reg_number, all_messages=all_messages)
+    return render_template("main_page.html", name=name, reg_number=reg_number, all_messages=json.loads(all_messages))
 
 
 def get_all_messages():
@@ -279,7 +278,7 @@ def schedule_submit(name, reg_number):
         return render_template("main_page.html", 
                                name=name, 
                                reg_number=reg_number,
-                               all_messages=all_messages)
+                               all_messages=json.loads(all_messages))
     else:
         return render_template("questionnaire.html", 
                                name=name, 
@@ -301,7 +300,7 @@ def post_message(name, reg_number):
         return render_template("main_page.html",
                                 name=name,
                                 reg_number=reg_number,
-                                all_messages=all_messages
+                                all_messages=json.loads(all_messages)
                                 )
 
     if not message:
@@ -326,7 +325,7 @@ def post_message(name, reg_number):
             return render_template("main_page.html",
                                    name=name,
                                    reg_number=reg_number,
-                                   all_messages=all_messages
+                                   all_messages=json.loads(all_messages)
                                    )
         else:
             conn.close()
