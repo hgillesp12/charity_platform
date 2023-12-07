@@ -62,32 +62,17 @@ with app.app_context():
 
     conn.close()
 
-# THIS SHOULD BE REDUNDANT
+
 @app.route('/')
-def default_home():
-    return render_template("index.html")
-
-
-@app.route('/main')
-def send_to_main():
-    return render_template("main_page.html")
+def send_to_register():
+    return render_template("register.html",
+                           message="Login with your charity registration number")
 
 
 @app.route('/post_message/<name>/<reg_number>')
 def post_new_message(name, reg_number):
     return render_template("post_message.html", name=name, reg_number=reg_number,
                            content="Post a new message!")
-
-
-@app.route('/profile')
-def send_to_profile():
-    return render_template("profile_page.html")
-
-# This should just be the start pace
-@app.route('/register')
-def send_to_register():
-    return render_template("register.html",
-                           message="Login with your charity registration number")
 
 
 def check_charity_reg_number(number):
@@ -102,16 +87,6 @@ def check_charity_reg_number(number):
     else:
         return None
 
-# TO DELETE BEFORE MERGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-@app.route('/questionnaire')
-def send_to_questionnaire():
-    return render_template("questionnaire.html")
-# TO DELETE BEFORE MERGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-# BELOW SHOULD BE REDUNDANT
-@app.route('/login')
-def send_to_login():
-    return render_template("login.html")
 
 @app.route('/login_submit', methods=["POST"])
 def send_to_profile_page():
