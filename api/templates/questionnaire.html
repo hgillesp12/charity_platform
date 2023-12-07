@@ -23,7 +23,7 @@
         <div class="card custom-card">
           <div class="card-body text-center">
             <p>Registration</p>
-            <p>Hello {{ name }}</p>
+            <p>Hello {{ name|replace('%20', ' ') }}</p>
             <p>{{ message }}</p>
             <hr />
             <div class="container">

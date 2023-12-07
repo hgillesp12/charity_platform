@@ -31,7 +31,7 @@
                 <p>{{message}}</p>
                 <div class="text-center">
                   <p>{{ content }}</p>
-                  <p>From: {{ name }}</p>
+                  <p>From: {{ name|replace('%20', ' ') }}</p>
                 </div>
                 <div>
                   <textarea
