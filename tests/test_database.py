@@ -174,6 +174,16 @@ def test_inserting_multiple_items_into_schedule_table(connect_to_database, creat
     rec_location = curs.fetchall()
     assert(len(rec_location) == 3)
 
+    # Check select all schedule by day works
+    curs.execute(config['query']['select_all_schedule_by_day'].replace(
+        '@schema_name@', SCHEMA_NAME)
+    )
+    rec_location = curs.fetchall()
+    assert(len(rec_location) == 5)
+
+
+
+
     ## TODO: Add a filter to search by charity name? although may not be unique... ## 
 
 
