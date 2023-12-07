@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request  # , send_from_directory
 import requests
 import os
+import json
 from datetime import datetime
 import configparser
 import psycopg2 as db
@@ -179,6 +180,29 @@ def submit_new_schedule(name, reg_number):
     return render_template("questionnaire.html", name=name, reg_number=reg_number,
                            message="Submit a new schedule")
 
+
+def get_all_messages():
+    (curs, config, conn) = connect_to_database()
+    message_table = {
+        "sender": [],
+        "content": [],
+        "date_time": []
+    }
+    try:
+        curs.execute(config['query']['select_all_messages_order_by_timestamp_desc'].replace('@schema_name@', SCHEMA_NAME))
+        for rec in curs:
+            message_table["sender"].append(rec[1])
+            message_table["content"].append(rec[2])
+            message_table["date_time"].append(rec[3].strftime("%d/%m/%Y, %H:%M:%S"))
+        conn.close()
+        message_json = json.dumps(message_table, indent = 4) 
+        return message_json
+    except Exception as e:
+        logging.info(e)
+        conn.rollback()   
+        conn.close()
+
+
 @app.route('/schedule_submit/<name>/<reg_number>', methods=['POST'])
 def schedule_submit(name, reg_number):
     day = request.form.get("day")
@@ -224,9 +248,12 @@ def schedule_submit(name, reg_number):
                                message=not_added_correct)
     
     if 'submit' in request.form:
+        ### TODO: This should be refactored / reworked ### 
+        all_messages = get_all_messages()
         return render_template("main_page.html", 
                                name=name, 
-                               reg_number=reg_number)
+                               reg_number=reg_number,
+                               all_messages=all_messages)
     else:
         return render_template("questionnaire.html", 
                                name=name, 
