@@ -101,7 +101,7 @@ def send_to_profile_page():
     return render_template("main_page.html", 
                             name=name,
                             reg_number=reg_number,
-                            all_messages=all_messages
+                            all_messages=json.loads(all_messages)
                             )
 
 @app.route('/registration_submit', methods=["POST"])
@@ -171,7 +171,7 @@ def submit_new_schedule(name, reg_number):
 @app.route('/main/<name>/<reg_number>')
 def back_home(name, reg_number):
     all_messages = get_all_messages()
-    return render_template("main_page.html", name=name, reg_number=reg_number, all_messages=all_messages)
+    return render_template("main_page.html", name=name, reg_number=reg_number, all_messages=json.loads(all_messages))
 
 
 def get_all_messages():
@@ -247,7 +247,7 @@ def schedule_submit(name, reg_number):
         return render_template("main_page.html", 
                                name=name, 
                                reg_number=reg_number,
-                               all_messages=all_messages)
+                               all_messages=json.loads(all_messages))
     else:
         return render_template("questionnaire.html", 
                                name=name, 
@@ -269,7 +269,7 @@ def post_message(name, reg_number):
         return render_template("main_page.html",
                                 name=name,
                                 reg_number=reg_number,
-                                all_messages=all_messages
+                                all_messages=json.loads(all_messages)
                                 )
 
     if not message:
@@ -294,7 +294,7 @@ def post_message(name, reg_number):
             return render_template("main_page.html",
                                    name=name,
                                    reg_number=reg_number,
-                                   all_messages=all_messages
+                                   all_messages=json.loads(all_messages)
                                    )
         else:
             conn.close()

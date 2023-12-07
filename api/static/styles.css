@@ -24,6 +24,10 @@ body {
   margin-top: 20px;
   margin-bottom: 20px;
 }
+.messages {
+  margin-top: 20px;
+  padding-bottom: 200px;
+}
 .center-card {
   width: 100%;
   max-width: 400px; /* Adjust width as per requirement */
