@@ -122,7 +122,12 @@ def send_to_profile_page():
                                message="Invalid charity ID number! Try again.")
     charity_info = response.json()
     name = charity_info["charity_name"].title()
-    return render_template("main_page.html", name=name, reg_number=reg_number)
+    all_messages = get_all_messages()
+    return render_template("main_page.html", 
+                            name=name,
+                            reg_number=reg_number,
+                            all_messages=all_messages
+                            )
 
 @app.route('/registration_submit', methods=["POST"])
 def reg_number_submit():
