@@ -25,7 +25,7 @@ body {
   margin-bottom: 20px;
 }
 .messages {
-  margin-top: 20px;
+  margin-top: 50px;
   padding-bottom: 200px;
 }
 .center-card {
@@ -38,6 +38,9 @@ body {
   border-radius: 10px; /* Rounded corners for the card */
   box-shadow: 8px 8px 3px 0 rgba(0,0,0,0.5); /* Soft edge / shadow */
   padding: 20px; /* Padding for the card */
+}
+.message-card {
+  width: 70%;
 }
 .custom-input {
   background-color: var(--input-background-color); /* Light gray input background */
