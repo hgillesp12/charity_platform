@@ -121,9 +121,11 @@ def send_to_profile_page():
             return render_template("main_page.html", 
                                     name=name,
                                     reg_number=reg_number,
-                                    all_messages=all_messages,
+                                    all_messages=json.loads(all_messages),
                                     map_html_string=map_html_string
                                     )
+
+
         else:
             conn.close()
             logging.info("Charity %s tried to log in but is not yet registered", reg_number)
@@ -457,7 +459,6 @@ def generate_map():
 
     for schedule in rec:
         charity = schedule[5]
-        print(schedule)
         day = schedule[2]
         time = schedule[3]
         location = schedule[4]
