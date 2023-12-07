@@ -256,6 +256,10 @@ def schedule_submit(name, reg_number):
             conn.commit()
             conn.close()
             logging.info("Added schedule %s, %s, %s, %s to the database", reg_number, day, time, location)
+            return render_template("questionnaire.html", 
+                        name=name, 
+                        reg_number=reg_number, 
+                        message=successful_add)
         else:
             conn.close()
             logging.info("Unable to add schedule %s, %s, %s, %s to the database", reg_number, day, time, location)
