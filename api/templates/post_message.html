@@ -4,10 +4,10 @@
         <link rel="icon" href="data:,">
     </head>
     <body>
-        <form action="/bulletin_board" id="usrform" method="post">
+        <p>{{ content }}</p>
+        <p>From: {{ name }}</p>
+        <form action="/post_message/{{ name }}/{{ reg_number }}" id="usrform" method="post">
             <br>
-            <label for="sender">From:</label>
-            <input type="text" id="sender" name=charity_name><br><br>
             <label for="message">Message:</label>
             <textarea name="message" form="usrform" maxlength="1000" placeholder="Enter message here..."></textarea><br><br>
             <input type="submit" name="post" value="Post">
