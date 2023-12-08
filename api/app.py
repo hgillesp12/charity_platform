@@ -245,7 +245,7 @@ def get_all_messages():
 @app.route('/schedule_submit/<name>/<reg_number>', methods=['POST'])
 def schedule_submit(name, reg_number):
     day = request.form.get("day")
-    time = request.form.get("timeOfDay")
+    time = request.form.get("time")
     location = request.form.get("location")
 
     missing_data = "Missing data - please fill in all fields"
@@ -434,20 +434,122 @@ times_mapping = {
     'Evening': 3
 }
 
+@app.route('/filter_map/<name>/<reg_number>', methods=['POST'])
+def filter_map(name, reg_number):
+    day = request.form.get("day")
+    time = request.form.get("time")
+    location = request.form.get("location")
+    logging.info("Received request to filter map by %s, %s, %s", day, time, location)
+    all_messages = get_all_messages()
+    map_html_string = generate_map(day, time, location)
+    return render_template("main_page.html", 
+                            name=name,
+                            reg_number=reg_number,
+                            all_messages=json.loads(all_messages),
+                            map_html_string=map_html_string
+                            )
 
 # Function to establish a database connection
-def generate_map():
+def generate_map(day=None, time=None, location=None):
     (curs, config, conn) = connect_to_database() 
-    try:
-        curs.execute(config['query']['select_all_schedule_by_day'].replace(
-            '@schema_name@', SCHEMA_NAME))
-        rec = curs.fetchall()
-        conn.close()
-    except Exception as c:
-        logging.info(c)
-        conn.rollback()
-        conn.close()
 
+    if day and time and location:
+        try:
+            curs.execute(config['query']['select_schedule_by_day_and_time_and_location'].replace(
+                '@schema_name@', SCHEMA_NAME), [day, time, location])
+            rec = curs.fetchall()
+            conn.close()
+            return generate_map_html(rec)
+        except Exception as c:
+            logging.info(c)
+            conn.rollback()
+            conn.close()
+
+    if day and time:
+        try:
+            curs.execute(config['query']['select_schedule_by_day_and_time'].replace(
+                '@schema_name@', SCHEMA_NAME), [day, time])
+            rec = curs.fetchall()
+            conn.close()
+            return generate_map_html(rec)
+        except Exception as c:
+            logging.info(c)
+            conn.rollback()
+            conn.close()
+
+    if day and location:
+        try:
+            curs.execute(config['query']['select_schedule_by_day_and_location'].replace(
+                '@schema_name@', SCHEMA_NAME), [day, location])
+            rec = curs.fetchall()
+            conn.close()
+            return generate_map_html(rec)
+        except Exception as c:
+            logging.info(c)
+            conn.rollback()
+            conn.close()
+
+    if time and location:
+        try:
+            curs.execute(config['query']['select_schedule_by_time_and_location'].replace(
+                '@schema_name@', SCHEMA_NAME), [time, location])
+            rec = curs.fetchall()
+            conn.close()
+            return generate_map_html(rec)
+        except Exception as c:
+            logging.info(c)
+            conn.rollback()
+            conn.close()
+
+    if day:
+        try:
+            curs.execute(config['query']['select_schedule_by_day'].replace(
+                '@schema_name@', SCHEMA_NAME), [day])
+            rec = curs.fetchall()
+            conn.close()
+            return generate_map_html(rec)
+        except Exception as c:
+            logging.info(c)
+            conn.rollback()
+            conn.close()
+        
+    if time:
+        try:
+            curs.execute(config['query']['select_schedule_by_time'].replace(
+                '@schema_name@', SCHEMA_NAME), [time])
+            rec = curs.fetchall()
+            conn.close()
+            return generate_map_html(rec)
+        except Exception as c:
+            logging.info(c)
+            conn.rollback()
+            conn.close()
+
+    if location:
+        try:
+            curs.execute(config['query']['select_schedule_by_location'].replace(
+                '@schema_name@', SCHEMA_NAME), [location])
+            rec = curs.fetchall()
+            conn.close()
+            return generate_map_html(rec)
+        except Exception as c:
+            logging.info(c)
+            conn.rollback()
+            conn.close()
+
+    else:
+        try:
+            curs.execute(config['query']['select_all_schedules_with_charity_name'].replace(
+                '@schema_name@', SCHEMA_NAME))
+            rec = curs.fetchall()
+            conn.close()
+            return generate_map_html(rec)
+        except Exception as c:
+            logging.info(c)
+            conn.rollback()
+            conn.close()
+
+def generate_map_html(schedules):
 
     # Create a base map centered around London
     map_center = [51.509865, -0.118092]  # Coordinates for central London
@@ -456,8 +558,7 @@ def generate_map():
     # Track locations with events
     locations_with_events = set()
 
-
-    for schedule in rec:
+    for schedule in schedules:
         charity = schedule[5]
         day = schedule[2]
         time = schedule[3]
@@ -518,7 +619,7 @@ def generate_map():
                 </tr>
             """.format(location)
 
-            sorted_events = sorted([schedule for schedule in rec if schedule[4] == location],
+            sorted_events = sorted([schedule for schedule in schedules if schedule[4] == location],
                                 key=lambda x: (days_mapping[x[2]], times_mapping[x[3]]))
 
             for index, schedule in enumerate(sorted_events):
@@ -547,3 +648,4 @@ def generate_map():
 
 
     return map_html_string
+
