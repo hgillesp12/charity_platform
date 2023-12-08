@@ -446,7 +446,10 @@ def filter_map(name, reg_number):
                             name=name,
                             reg_number=reg_number,
                             all_messages=json.loads(all_messages),
-                            map_html_string=map_html_string
+                            map_html_string=map_html_string,
+                            selected_day=day,
+                            selected_time=time,
+                            selected_location=location
                             )
 
 # Function to establish a database connection
