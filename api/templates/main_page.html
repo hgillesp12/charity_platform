@@ -22,206 +22,60 @@
     </div>
 
     <!-- Main Content -->
-    <div class="container">
+    <div class="container main-content">
       <form
         action="/filter_map/{{ name }}/{{ reg_number }}"
-        method="post"
-      >
-        <div class="row form-margin">
-          <!-- Left column for week days -->
-          <div class="col text-left">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="day"
-                id="monday"
-                value="Monday"
-              />
-              <label class="form-check-label" for="monday"
-                >Monday</label
-              >
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="day"
-                id="tuesday"
-                value="Tuesday"
-              />
-              <label class="form-check-label" for="tuesday"
-                >Tuesday</label
-              >
-            </div>
-            <!-- Add other weekdays here -->
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="day"
-                id="wednesday"
-                value="Wednesday"
-              />
-              <label class="form-check-label" for="wednesday"
-                >Wednesday</label
-              >
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="day"
-                id="thursday"
-                value="Thursday"
-              />
-              <label class="form-check-label" for="thursday"
-                >Thursday</label
-              >
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="day"
-                id="friday"
-                value="Friday"
-              />
-              <label class="form-check-label" for="friday"
-                >Friday</label
-              >
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="day"
-                id="saturday"
-                value="Saturday"
-              />
-              <label class="form-check-label" for="saturday"
-                >Saturday</label
-              >
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="day"
-                id="sunday"
-                value="Sunday"
-              />
-              <label class="form-check-label" for="sunday"
-                >Sunday</label
-              >
-            </div>
+        method="post">
+        <!-- Filter section -->
+        <div class="form-row">
+          <!-- Day Dropdown -->
+          <div class="form-group col-md-4">
+              <label for="day">Day</label>
+              <select class="form-control" id="day" name="day">
+                  <option value="" disabled selected>All Days</option>
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                  <option value="Sunday">Sunday</option>
+              </select>
           </div>
 
-          <!-- Right column for time of day -->
-          <div class="col text-left">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="timeOfDay"
-                id="morning"
-                value="Morning"
-              />
-              <label class="form-check-label" for="morning"
-                >Morning</label
-              >
-            </div>
-            <!-- Add other times of day here -->
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="time"
-                id="afternoon"
-                value="Afternoon"
-              />
-              <label class="form-check-label" for="afternoon"
-                >Afternoon</label
-              >
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="timeOfDay"
-                id="evening"
-                value="Evening"
-              />
-              <label class="form-check-label" for="evening"
-                >Evening</label
-              >
-            </div>
+          <!-- Time Dropdown -->
+          <div class="form-group col-md-4">
+              <label for="time">Time</label>
+              <select class="form-control" id="time" name="time">
+                  <option value="" disabled selected>All Times</option>
+                  <option value="Morning">Morning</option>
+                  <option value="Afternoon">Afternoon</option>
+                  <option value="Evening">Evening</option>
+              </select>
           </div>
-        </div>
-        <div class="row justify-content-center">
-          <select class="dropdown" id="dropdown" name="location">
-            <option value="" disabled selected>Select Borough</option>
-            <option value="Barking and Dagenham">
-              Barking and Dagenham
-            </option>
-            <option value="Barnet">Barnet</option>
-            <option value="Bexley">Bexley</option>
-            <option value="Brent">Brent</option>
-            <option value="Bromley">Bromley</option>
-            <option value="Camden">Camden</option>
-            <option value="City of London">City of London</option>
-            <option value="Croydon">Croydon</option>
-            <option value="Ealing">Ealing</option>
-            <option value="Enfield">Enfield</option>
-            <option value="Greenwich">Greenwich</option>
-            <option value="Hackney">Hackney</option>
-            <option value="Hammersmith and Fulham">
-              Hammersmith and Fulham
-            </option>
-            <option value="Haringey">Haringey</option>
-            <option value="Harrow">Harrow</option>
-            <option value="Havering">Havering</option>
-            <option value="Hillingdon">Hillingdon</option>
-            <option value="Hounslow">Hounslow</option>
-            <option value="Islington">Islington</option>
-            <option value="Kensington and Chelsea">
-              Kensington and Chelsea
-            </option>
-            <option value="Kingston upon Thames">
-              Kingston upon Thames
-            </option>
-            <option value="Lambeth">Lambeth</option>
-            <option value="Lewisham">Lewisham</option>
-            <option value="Merton">Merton</option>
-            <option value="Newham">Newham</option>
-            <option value="Redbridge">Redbridge</option>
-            <option value="Richmond upon Thames">
-              Richmond upon Thames
-            </option>
-            <option value="Southwark">Southwark</option>
-            <option value="Sutton">Sutton</option>
-            <option value="Tower Hamlets">Tower Hamlets</option>
-            <option value="Waltham Forest">Waltham Forest</option>
-            <option value="Wandsworth">Wandsworth</option>
-            <option value="Westminster">Westminster</option>
-          </select>
-        </div>
-        <hr />
-        <div class="row">
-          <div class="container">
-            <div class="row justify-content-center">
-              <div class="col">
-                <input
-                  class="btn custom-button btn-primary1 btn-register-page"
-                  type="submit"
-                  name="submit"
-                  value="Submit"
-                />
-              </div>
-            </div>
+
+          <!-- Location Dropdown -->
+          <div class="form-group col-md-4">
+              <label for="location">Location</label>
+              <select class="form-control" id="location" name="location">
+                  <option value="" disabled selected>All Locations</option>
+                  <option value="Barking and Dagenham">Barking and Dagenham</option>
+                  <option value="Barnet">Barnet</option>
+                  <!-- Add other locations as needed -->
+              </select>
           </div>
-        </div>
-      </form>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="row justify-content-center">
+          <div class="col-md-4">
+              <input class="btn custom-button btn-primary1 btn-register-page" type="submit" name="submit"
+                  value="Submit" />
+          </div>
+      </div>
+      <hr />
+    </form>
+
       <!-- Map Section -->
       <div class="row margin-row">
         <div class="col">
