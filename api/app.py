@@ -93,6 +93,23 @@ def check_charity_reg_number(number):
         return None
 
 
+def get_all_registered_charities():
+    all_charities = []
+    (curs, config, conn) = connect_to_database()
+    try:
+        curs.execute(config['query']['select_all_registered_charities'].replace(
+            '@schema_name@', SCHEMA_NAME))
+        rec = curs.fetchall()
+        conn.close()
+        for charity in rec:
+            all_charities.append(charity[0])
+        return all_charities
+    except Exception as c:
+        logging.info(c)
+        conn.rollback()
+        conn.close()
+
+
 @app.route('/login_submit', methods=["POST"])
 def send_to_profile_page():
     reg_number = request.form.get("reg_number")
@@ -116,16 +133,16 @@ def send_to_profile_page():
         if (curs.rowcount == 1):
             conn.close()
             logging.info("Charity %s successfully logged in", reg_number)
+            charities = get_all_registered_charities()
             all_messages = get_all_messages()
             map_html_string = generate_map()
             return render_template("main_page.html", 
                                     name=name,
                                     reg_number=reg_number,
                                     all_messages=json.loads(all_messages),
-                                    map_html_string=map_html_string
+                                    map_html_string=map_html_string,
+                                    charities=charities
                                     )
-
-
         else:
             conn.close()
             logging.info("Charity %s tried to log in but is not yet registered", reg_number)
@@ -208,13 +225,15 @@ def submit_new_schedule(name, reg_number):
 
 @app.route('/main/<name>/<reg_number>')
 def back_home(name, reg_number):
+    charities = get_all_registered_charities()
     all_messages = get_all_messages()
     map_html_string = generate_map()
     return render_template("main_page.html", 
                             name=name,
                             reg_number=reg_number,
                             all_messages=json.loads(all_messages),
-                            map_html_string=map_html_string
+                            map_html_string=map_html_string,
+                            charities=charities
                             )
 
 
@@ -303,13 +322,15 @@ def post_message(name, reg_number):
     error_message = "Message could not be posted."
 
     if 'cancel' in request.form:
+        charities = get_all_registered_charities()
         all_messages = get_all_messages()
         map_html_string = generate_map()
         return render_template("main_page.html", 
                                 name=name,
                                 reg_number=reg_number,
                                 all_messages=json.loads(all_messages),
-                                map_html_string=map_html_string
+                                map_html_string=map_html_string,
+                                charities=charities
                                 )
     if not message:
         logging.info("Missing message content")
@@ -329,13 +350,15 @@ def post_message(name, reg_number):
             conn.commit()
             conn.close()
             logging.info("Added message to database")
+            charities = get_all_registered_charities()
             all_messages = get_all_messages()
             map_html_string = generate_map()
             return render_template("main_page.html", 
                                     name=name,
                                     reg_number=reg_number,
                                     all_messages=json.loads(all_messages),
-                                    map_html_string=map_html_string
+                                    map_html_string=map_html_string,
+                                    charities=charities
                                     )
         else:
             conn.close()
@@ -375,9 +398,6 @@ def get_all_schedules():
         logging.info(e)
         conn.rollback()   
         conn.close()
-
-
-
 
 
 borough_coordinates = {
@@ -439,7 +459,9 @@ def filter_map(name, reg_number):
     day = request.form.get("day")
     time = request.form.get("time")
     location = request.form.get("location")
-    logging.info("Received request to filter map by %s, %s, %s", day, time, location)
+    charity = request.form.get("charity")
+    logging.info("Received request to filter map by %s, %s, %s, %s", day, time, location, charity)
+    charities = get_all_registered_charities()
     all_messages = get_all_messages()
     map_html_string = generate_map(day, time, location)
     return render_template("main_page.html", 
@@ -447,9 +469,11 @@ def filter_map(name, reg_number):
                             reg_number=reg_number,
                             all_messages=json.loads(all_messages),
                             map_html_string=map_html_string,
+                            charities=charities,
                             selected_day=day,
                             selected_time=time,
-                            selected_location=location
+                            selected_location=location,
+                            selected_charity=charity
                             )
 
 # Function to establish a database connection
