@@ -117,9 +117,18 @@ body {
   width: 100%;
   z-index: 1000; /* Ensures navbar stays on top */
   display: flex; /* Enables flexbox */
-  justify-content: flex-end; /* Aligns children (links) to the right */
+  justify-content: space-between; /* Aligns children (links) to the right */
   align-items: center; /* Centers children vertically */
   padding-right: 20px;
+}
+
+.navbar-name {
+  margin-top: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: black;
+  text-align: left; /* Aligns links to the left */
+  height: 100%;
 }
 
 .navbar-links {

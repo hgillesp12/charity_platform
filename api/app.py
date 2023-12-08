@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request  # , send_from_directory
+from flask import Flask, render_template, request, redirect, url_for  # , send_from_directory
 import requests
 import os
 import folium
@@ -117,12 +117,14 @@ def send_to_profile_page():
             conn.close()
             logging.info("Charity %s successfully logged in", reg_number)
             all_messages = get_all_messages()
+            schedule = get_schedules_by_charity(reg_number)
             map_html_string = generate_map()
             return render_template("main_page.html", 
                                     name=name,
                                     reg_number=reg_number,
                                     all_messages=json.loads(all_messages),
-                                    map_html_string=map_html_string
+                                    map_html_string=map_html_string,
+                                    schedule=json.loads(schedule)
                                     )
 
 
@@ -210,11 +212,13 @@ def submit_new_schedule(name, reg_number):
 def back_home(name, reg_number):
     all_messages = get_all_messages()
     map_html_string = generate_map()
+    schedule = get_schedules_by_charity(reg_number)
     return render_template("main_page.html", 
                             name=name,
                             reg_number=reg_number,
                             all_messages=json.loads(all_messages),
-                            map_html_string=map_html_string
+                            map_html_string=map_html_string,
+                            schedule=json.loads(schedule)
                             )
 
 
@@ -304,13 +308,16 @@ def post_message(name, reg_number):
 
     if 'cancel' in request.form:
         all_messages = get_all_messages()
+        schedule = get_schedules_by_charity(reg_number)
         map_html_string = generate_map()
         return render_template("main_page.html", 
                                 name=name,
                                 reg_number=reg_number,
                                 all_messages=json.loads(all_messages),
-                                map_html_string=map_html_string
+                                map_html_string=map_html_string,
+                                schedule=json.loads(schedule)
                                 )
+
     if not message:
         logging.info("Missing message content")
         return render_template("post_message.html",
@@ -330,12 +337,14 @@ def post_message(name, reg_number):
             conn.close()
             logging.info("Added message to database")
             all_messages = get_all_messages()
+            schedule = get_schedules_by_charity(reg_number)
             map_html_string = generate_map()
             return render_template("main_page.html", 
                                     name=name,
                                     reg_number=reg_number,
                                     all_messages=json.loads(all_messages),
-                                    map_html_string=map_html_string
+                                    map_html_string=map_html_string,
+                                    schedule=json.loads(schedule)
                                     )
         else:
             conn.close()
@@ -352,6 +361,58 @@ def post_message(name, reg_number):
                                name=name,
                                reg_number=reg_number, 
                                content=error_message)
+
+
+def get_schedules_by_charity(reg_number):
+    (curs, config, conn) = connect_to_database() 
+    
+    schedule_table = {
+        "id":[],
+        "day": [],
+        "time": [],
+        "location": []
+    }
+    
+    try:
+        curs.execute(config['query']['select_schedule_by_charity_number'].replace(
+            '@schema_name@', SCHEMA_NAME), [reg_number]
+        )
+        rec = curs.fetchall()
+        for event_info in rec:
+            schedule_table["id"].append(event_info[0])
+            schedule_table["day"].append(event_info[2])
+            schedule_table["time"].append(event_info[3])
+            schedule_table["location"].append(event_info[4])        
+        conn.close()
+        schedule_json = json.dumps(schedule_table, indent = 4) 
+        return schedule_json
+    except Exception as e:
+        logging.info(e)
+        conn.rollback()
+        conn.close()
+
+
+def delete_single_event(id):
+    (curs, config, conn) = connect_to_database() 
+    
+    try:
+        curs.execute(config['delete_from']['delete_event_from_schedule'].replace(
+            '@schema_name@', SCHEMA_NAME), [id]
+        )
+        if (curs.rowcount == 1):
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        logging.info(e)
+        conn.rollback()
+        conn.close()
+
+
+@app.route('/delete_event/<name>/<reg_number>', methods=["POST"])
+def delete_event(name, reg_number):
+    id = request.form.get("rowId")
+    delete_single_event(id)
+    return redirect(url_for('back_home', name=name, reg_number=reg_number))
 
 
 def get_all_schedules():
