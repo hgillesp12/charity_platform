@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for  # , send_from_directory
+from urllib.parse import unquote
 import requests
 import os
 import folium
@@ -410,9 +411,10 @@ def delete_single_event(id):
 
 @app.route('/delete_event/<name>/<reg_number>', methods=["POST"])
 def delete_event(name, reg_number):
+    decoded_name = unquote(name)
     id = request.form.get("rowId")
     delete_single_event(id)
-    return redirect(url_for('back_home', name=name, reg_number=reg_number))
+    return redirect(url_for('back_home', name=decoded_name, reg_number=reg_number))
 
 # Can we delete this function - seems like it's not being used?
 def get_all_schedules():
