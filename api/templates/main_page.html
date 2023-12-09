@@ -31,7 +31,12 @@
 
     <!-- Main Content -->
     <div class="container main-content">
-      <h1>Hello {{ name|replace('%20', ' ') }} </h1>
+      <h1>
+        <script>
+          let decoded_name = decodeURIComponent('{{ name }}')
+          document.write("Hello " + decoded_name);
+        </script>
+      </h1>
       <!-- Map Section -->
       <div class="row margin-row">
         <div class="col">
