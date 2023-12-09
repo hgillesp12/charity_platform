@@ -36,12 +36,7 @@
                 <p>{{message}}</p>
                 <div class="text-center">
                   <p>{{ content }}</p>
-                  <p>
-                    <script>
-                      let decoded_name = decodeURIComponent('{{ name }}')
-                      document.write("From: " + decoded_name);
-                    </script>
-                  </p>
+                  <p>Hello {{ name|replace('%20', ' ') }}</p>
                 </div>
                 <div>
                   <textarea

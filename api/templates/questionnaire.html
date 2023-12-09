@@ -28,12 +28,7 @@
         <div class="card custom-card">
           <div class="card-body text-center">
             <p>Registration</p>
-            <p>
-              <script>
-                let decoded_name = decodeURIComponent('{{ name }}')
-                document.write("Hello " + decoded_name);
-              </script>
-            </p>
+            <p>Hello {{ name|replace('%20', ' ') }}</p>
             <p>{{ message }}</p>
             <hr />
             <div class="container">
