@@ -414,7 +414,7 @@ def delete_event(name, reg_number):
     delete_single_event(id)
     return redirect(url_for('back_home', name=name, reg_number=reg_number))
 
-
+# Can we delete this function - seems like it's not being used?
 def get_all_schedules():
     (curs, config, conn) = connect_to_database()
     message_table = {
@@ -436,9 +436,6 @@ def get_all_schedules():
         logging.info(e)
         conn.rollback()   
         conn.close()
-
-
-
 
 
 borough_coordinates = {
