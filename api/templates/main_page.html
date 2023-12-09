@@ -33,13 +33,9 @@
               <label for="day">Day</label>
               <select class="form-control" id="day" name="day">
                 <option value="" {% if not selected_day %}selected{% endif %}>All Days</option>
-                <option value="Monday" {% if selected_day == 'Monday' %}selected{% endif %}>Monday</option>
-                <option value="Tuesday" {% if selected_day == 'Tuesday' %}selected{% endif %}>Tuesday</option>
-                <option value="Wednesday" {% if selected_day == 'Wednesday' %}selected{% endif %}>Wednesday</option>
-                <option value="Thursday" {% if selected_day == 'Thursday' %}selected{% endif %}>Thursday</option>
-                <option value="Friday" {% if selected_day == 'Friday' %}selected{% endif %}>Friday</option>
-                <option value="Saturday" {% if selected_day == 'Saturday' %}selected{% endif %}>Saturday</option>
-                <option value="Sunday" {% if selected_day == 'Sunday' %}selected{% endif %}>Sunday</option>
+                {% for day in days %}
+                <option value="{{ day }}" {% if selected_day == day %}selected{% endif %}>{{ day }}</option>
+                {% endfor %}
               </select>
           </div>
 
@@ -48,9 +44,9 @@
               <label for="time">Time</label>
               <select class="form-control" id="time" name="time">
                 <option value="" {% if not selected_time %}selected{% endif %}>All Times</option>
-                <option value="Morning" {% if selected_time == 'Morning' %}selected{% endif %}>Morning</option>
-                <option value="Afternoon" {% if selected_time == 'Afternoon' %}selected{% endif %}>Afternoon</option>
-                <option value="Evening" {% if selected_time == 'Evening' %}selected{% endif %}>Evening</option>
+                {% for time in times %}
+                <option value="{{ time }}" {% if selected_time == time %}selected{% endif %}>{{ time }}</option>
+                {% endfor %}
               </select>
           </div>
 
@@ -59,39 +55,9 @@
               <label for="location">Location</label>
               <select class="form-control" id="location" name="location">
                 <option value="" {% if not selected_location %}selected{% endif %}>All Locations</option>
-                <option value="Barking and Dagenham" {% if selected_location == 'Barking and Dagenham' %}selected{% endif %}>Barking and Dagenham</option>
-                <option value="Barnet" {% if selected_location == 'Barnet' %}selected{% endif %}>Barnet</option>
-                <option value="Bexley" {% if selected_location == 'Bexley' %}selected{% endif %}>Bexley</option>
-                <option value="Brent" {% if selected_location == 'Brent' %}selected{% endif %}>Brent</option>
-                <option value="Bromley" {% if selected_location == 'Bromley' %}selected{% endif %}>Bromley</option>
-                <option value="Camden" {% if selected_location == 'Camden' %}selected{% endif %}>Camden</option>
-                <option value="City of London" {% if selected_location == 'City of London' %}selected{% endif %}>City of London</option>
-                <option value="Croydon" {% if selected_location == 'Croydon' %}selected{% endif %}>Croydon</option>
-                <option value="Ealing" {% if selected_location == 'Ealing' %}selected{% endif %}>Ealing</option>
-                <option value="Enfield" {% if selected_location == 'Enfield' %}selected{% endif %}>Enfield</option>
-                <option value="Greenwich" {% if selected_location == 'Greenwich' %}selected{% endif %}>Greenwich</option>
-                <option value="Hackney" {% if selected_location == 'Hackney' %}selected{% endif %}>Hackney</option>
-                <option value="Hammersmith and Fulham" {% if selected_location == 'Hammersmith and Fulham' %}selected{% endif %}>Hammersmith and Fulham</option>
-                <option value="Haringey" {% if selected_location == 'Haringey' %}selected{% endif %}>Haringey</option>
-                <option value="Harrow" {% if selected_location == 'Harrow' %}selected{% endif %}>Harrow</option>
-                <option value="Havering" {% if selected_location == 'Havering' %}selected{% endif %}>Havering</option>
-                <option value="Hillingdon" {% if selected_location == 'Hillingdon' %}selected{% endif %}>Hillingdon</option>
-                <option value="Hounslow" {% if selected_location == 'Hounslow' %}selected{% endif %}>Hounslow</option>
-                <option value="Islington" {% if selected_location == 'Islington' %}selected{% endif %}>Islington</option>
-                <option value="Kensington and Chelsea" {% if selected_location == 'Kensington and Chelsea' %}selected{% endif %}>Kensington and Chelsea</option>
-                <option value="Kingston upon Thames" {% if selected_location == 'Kingston upon Thames' %}selected{% endif %}>Kingston upon Thames</option>
-                <option value="Lambeth" {% if selected_location == 'Lambeth' %}selected{% endif %}>Lambeth</option>
-                <option value="Lewisham" {% if selected_location == 'Lewisham' %}selected{% endif %}>Lewisham</option>
-                <option value="Merton" {% if selected_location == 'Merton' %}selected{% endif %}>Merton</option>
-                <option value="Newham" {% if selected_location == 'Newham' %}selected{% endif %}>Newham</option>
-                <option value="Redbridge" {% if selected_location == 'Redbridge' %}selected{% endif %}>Redbridge</option>
-                <option value="Richmond upon Thames" {% if selected_location == 'Richmond upon Thames' %}selected{% endif %}>Richmond upon Thames</option>
-                <option value="Southwark" {% if selected_location == 'Southwark' %}selected{% endif %}>Southwark</option>
-                <option value="Sutton" {% if selected_location == 'Sutton' %}selected{% endif %}>Sutton</option>
-                <option value="Tower Hamlets" {% if selected_location == 'Tower Hamlets' %}selected{% endif %}>Tower Hamlets</option>
-                <option value="Waltham Forest" {% if selected_location == 'Waltham Forest' %}selected{% endif %}>Waltham Forest</option>
-                <option value="Wandsworth" {% if selected_location == 'Wandsworth' %}selected{% endif %}>Wandsworth</option>
-                <option value="Westminster" {% if selected_location == 'Westminster' %}selected{% endif %}>Westminster</option>
+                {% for location in locations %}
+                <option value="{{ location }}" {% if selected_location == location %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
               </select>
           </div>
 
