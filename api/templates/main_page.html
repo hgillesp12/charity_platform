@@ -65,7 +65,7 @@
           <div class="form-group col-md-5">
             <label for="charity">Charity</label>
             <select class="form-control" id="charity" name="charity">
-              <option value="" {% if not selected_charity %}selected{% endif %}>All Charities</option>
+              <option value="" {% if not selected_charity %}selected{% endif %}>All Registered Charities</option>
               {% for charity in charities %}
               <option value="{{ charity }}" {% if selected_charity == charity %}selected{% endif %}>{{ charity }}</option>
               {% endfor %}
