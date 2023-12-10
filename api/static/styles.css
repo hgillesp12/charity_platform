@@ -166,3 +166,13 @@ body {
 .navbar-links a:hover::after {
   transform: translateY(0); /* Moves the underline up on hover */
 }
+
+.fa-trash-can {
+  font-size: 20px;
+  color:white
+}
+
+.contact-info-header{
+  font-size: 24px;
+  text-align: center;
+}
