@@ -175,7 +175,7 @@ def test_inserting_multiple_items_into_schedule_table(connect_to_database, creat
     assert(len(rec_location) == 3)
 
     # Check select all schedule by day works
-    curs.execute(config['query']['select_all_schedule_by_day'].replace(
+    curs.execute(config['query']['select_all_schedules_with_charity_name'].replace(
         '@schema_name@', SCHEMA_NAME)
     )
     rec_location = curs.fetchall()

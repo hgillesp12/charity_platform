@@ -15,6 +15,60 @@ API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 logging.basicConfig(level=logging.INFO)
 
 
+borough_coordinates = {
+    "Barking and Dagenham": {"coordinates": [51.5607, 0.1557], "popup": ""},
+    "Barnet": {"coordinates": [51.6252, -0.1517], "popup": ""},
+    "Bexley": {"coordinates": [51.4549, 0.1505], "popup": ""},
+    "Brent": {"coordinates": [51.5588, -0.2817], "popup": ""},
+    "Bromley": {"coordinates": [51.4039, 0.0198], "popup": ""},
+    "Camden": {"coordinates": [51.5290, -0.1255], "popup": ""},
+    "City of London": {"coordinates": [51.5155, -0.0922], "popup": ""},
+    "Croydon": {"coordinates": [51.3762, -0.0982], "popup": ""},
+    "Ealing": {"coordinates": [51.5130, -0.3089], "popup": ""},
+    "Enfield": {"coordinates": [51.6538, -0.0799], "popup": ""},
+    "Greenwich": {"coordinates": [51.4892, 0.0648], "popup": ""},
+    "Hackney": {"coordinates": [51.5450, -0.0553], "popup": ""},
+    "Hammersmith and Fulham": {"coordinates": [51.4920, -0.2236], "popup": ""},
+    "Haringey": {"coordinates": [51.6000, -0.1119], "popup": ""},
+    "Harrow": {"coordinates": [51.5898, -0.3346], "popup": ""},
+    "Havering": {"coordinates": [51.5812, 0.1837], "popup": ""},
+    "Hillingdon": {"coordinates": [51.5441, -0.4760], "popup": ""},
+    "Hounslow": {"coordinates": [51.4746, -0.3680], "popup": ""},
+    "Islington": {"coordinates": [51.5416, -0.1022], "popup": ""},
+    "Kensington and Chelsea": {"coordinates": [51.5020, -0.1870], "popup": ""},
+    "Kingston upon Thames": {"coordinates": [51.4085, -0.3064], "popup": ""},
+    "Lambeth": {"coordinates": [51.5013, -0.1173], "popup": ""},
+    "Lewisham": {"coordinates": [51.4452, -0.0209], "popup": ""},
+    "Merton": {"coordinates": [51.4098, -0.2108], "popup": ""},
+    "Newham": {"coordinates": [51.5077, 0.0469], "popup": ""},
+    "Redbridge": {"coordinates": [51.5590, 0.0741], "popup": ""},
+    "Richmond upon Thames": {"coordinates": [51.4479, -0.3260], "popup": ""},
+    "Southwark": {"coordinates": [51.4834, -0.0821], "popup": ""},
+    "Sutton": {"coordinates": [51.3618, -0.1945], "popup": ""},
+    "Tower Hamlets": {"coordinates": [51.5099, -0.0059], "popup": ""},
+    "Waltham Forest": {"coordinates": [51.5908, -0.0134], "popup": ""},
+    "Wandsworth": {"coordinates": [51.4560, -0.1921], "popup": ""},
+    "Westminster": {"coordinates": [51.4973, -0.1372], "popup": ""}
+}
+
+# Dictionary to map days to numerical values for sorting
+days_mapping = {
+    'Monday': 1,
+    'Tuesday': 2,
+    'Wednesday': 3,
+    'Thursday': 4,
+    'Friday': 5,
+    'Saturday': 6,
+    'Sunday': 7
+}
+
+# Dictionary to map times to numerical values for sorting
+times_mapping = {
+    'Morning': 1,
+    'Afternoon': 2,
+    'Evening': 3
+}
+
 def connect_to_database():
     script_dir = os.path.dirname(os.path.realpath(__file__))
     config_path = os.path.join(script_dir, 'dbtool.ini')
@@ -100,6 +154,23 @@ def check_charity_reg_number(number):
         return None
 
 
+def get_all_registered_charities():
+    all_charities = []
+    (curs, config, conn) = connect_to_database()
+    try:
+        curs.execute(config['query']['select_all_registered_charities'].replace(
+            '@schema_name@', SCHEMA_NAME))
+        rec = curs.fetchall()
+        conn.close()
+        for charity in rec:
+            all_charities.append(charity[0])
+        return all_charities
+    except Exception as c:
+        logging.info(c)
+        conn.rollback()
+        conn.close()
+
+
 @app.route('/login_submit', methods=["POST"])
 def send_to_profile_page():
     reg_number = request.form.get("reg_number")
@@ -121,13 +192,19 @@ def send_to_profile_page():
         if (curs.rowcount == 1):
             conn.close()
             logging.info("Charity %s successfully logged in", reg_number)
+            charities = get_all_registered_charities()
             all_messages = get_all_messages()
             map_html_string = generate_map()
-            return render_template(
-                "main_page.html", name=name, reg_number=reg_number,
-                all_messages=json.loads(all_messages),
-                map_html_string=map_html_string
-                )
+            return render_template("main_page.html", 
+                                   name=name,
+                                   reg_number=reg_number,
+                                    all_messages=json.loads(all_messages),
+                                    map_html_string=map_html_string,
+                                    days=days_mapping,
+                                    times=times_mapping,
+                                    locations=borough_coordinates,
+                                    charities=charities
+                                    )
         else:
             conn.close()
             logging.info(
@@ -215,14 +292,19 @@ def submit_new_schedule(name, reg_number):
 
 @app.route('/main/<name>/<reg_number>')
 def back_home(name, reg_number):
+    charities = get_all_registered_charities()
     all_messages = get_all_messages()
     map_html_string = generate_map()
-    return render_template("main_page.html",
-                           name=name,
-                           reg_number=reg_number,
-                           all_messages=json.loads(all_messages),
-                           map_html_string=map_html_string
-                           )
+    return render_template("main_page.html", 
+                            name=name,
+                            reg_number=reg_number,
+                            all_messages=json.loads(all_messages),
+                            map_html_string=map_html_string,
+                            days=days_mapping,
+                            times=times_mapping,
+                            locations=borough_coordinates,
+                            charities=charities
+                            )
 
 
 def get_all_messages():
@@ -255,7 +337,7 @@ def get_all_messages():
 @app.route('/schedule_submit/<name>/<reg_number>', methods=['POST'])
 def schedule_submit(name, reg_number):
     day = request.form.get("day")
-    time = request.form.get("timeOfDay")
+    time = request.form.get("time")
     location = request.form.get("location")
 
     missing_data = "Missing data - please fill in all fields"
@@ -317,14 +399,19 @@ def post_message(name, reg_number):
     error_message = "Message could not be posted."
 
     if 'cancel' in request.form:
+        charities = get_all_registered_charities()
         all_messages = get_all_messages()
         map_html_string = generate_map()
-        return render_template("main_page.html",
-                               name=name,
-                               reg_number=reg_number,
-                               all_messages=json.loads(all_messages),
-                               map_html_string=map_html_string
-                               )
+        return render_template("main_page.html", 
+                                name=name,
+                                reg_number=reg_number,
+                                all_messages=json.loads(all_messages),
+                                map_html_string=map_html_string,
+                                days=days_mapping,
+                                times=times_mapping,
+                                locations=borough_coordinates,
+                                charities=charities
+                                )
     if not message:
         logging.info("Missing message content")
         return render_template("post_message.html",
@@ -343,14 +430,19 @@ def post_message(name, reg_number):
             conn.commit()
             conn.close()
             logging.info("Added message to database")
+            charities = get_all_registered_charities()
             all_messages = get_all_messages()
             map_html_string = generate_map()
-            return render_template("main_page.html",
-                                   name=name,
-                                   reg_number=reg_number,
-                                   all_messages=json.loads(all_messages),
-                                   map_html_string=map_html_string
-                                   )
+            return render_template("main_page.html", 
+                                    name=name,
+                                    reg_number=reg_number,
+                                    all_messages=json.loads(all_messages),
+                                    map_html_string=map_html_string,
+                                    days=days_mapping,
+                                    times=times_mapping,
+                                    locations=borough_coordinates,
+                                    charities=charities
+                                    )
         else:
             conn.close()
             logging.info("Unable to add message from %s to the database",
@@ -395,74 +487,70 @@ def get_all_schedules():
         conn.close()
 
 
-borough_coordinates = {
-    "Barking and Dagenham": {"coordinates": [51.5607, 0.1557], "popup": ""},
-    "Barnet": {"coordinates": [51.6252, -0.1517], "popup": ""},
-    "Bexley": {"coordinates": [51.4549, 0.1505], "popup": ""},
-    "Brent": {"coordinates": [51.5588, -0.2817], "popup": ""},
-    "Bromley": {"coordinates": [51.4039, 0.0198], "popup": ""},
-    "Camden": {"coordinates": [51.5290, -0.1255], "popup": ""},
-    "City of London": {"coordinates": [51.5155, -0.0922], "popup": ""},
-    "Croydon": {"coordinates": [51.3762, -0.0982], "popup": ""},
-    "Ealing": {"coordinates": [51.5130, -0.3089], "popup": ""},
-    "Enfield": {"coordinates": [51.6538, -0.0799], "popup": ""},
-    "Greenwich": {"coordinates": [51.4892, 0.0648], "popup": ""},
-    "Hackney": {"coordinates": [51.5450, -0.0553], "popup": ""},
-    "Hammersmith and Fulham": {"coordinates": [51.4920, -0.2236], "popup": ""},
-    "Haringey": {"coordinates": [51.6000, -0.1119], "popup": ""},
-    "Harrow": {"coordinates": [51.5898, -0.3346], "popup": ""},
-    "Havering": {"coordinates": [51.5812, 0.1837], "popup": ""},
-    "Hillingdon": {"coordinates": [51.5441, -0.4760], "popup": ""},
-    "Hounslow": {"coordinates": [51.4746, -0.3680], "popup": ""},
-    "Islington": {"coordinates": [51.5416, -0.1022], "popup": ""},
-    "Kensington and Chelsea": {"coordinates": [51.5020, -0.1870], "popup": ""},
-    "Kingston upon Thames": {"coordinates": [51.4085, -0.3064], "popup": ""},
-    "Lambeth": {"coordinates": [51.5013, -0.1173], "popup": ""},
-    "Lewisham": {"coordinates": [51.4452, -0.0209], "popup": ""},
-    "Merton": {"coordinates": [51.4098, -0.2108], "popup": ""},
-    "Newham": {"coordinates": [51.5077, 0.0469], "popup": ""},
-    "Redbridge": {"coordinates": [51.5590, 0.0741], "popup": ""},
-    "Richmond upon Thames": {"coordinates": [51.4479, -0.3260], "popup": ""},
-    "Southwark": {"coordinates": [51.4834, -0.0821], "popup": ""},
-    "Sutton": {"coordinates": [51.3618, -0.1945], "popup": ""},
-    "Tower Hamlets": {"coordinates": [51.5099, -0.0059], "popup": ""},
-    "Waltham Forest": {"coordinates": [51.5908, -0.0134], "popup": ""},
-    "Wandsworth": {"coordinates": [51.4560, -0.1921], "popup": ""},
-    "Westminster": {"coordinates": [51.4973, -0.1372], "popup": ""}
-}
-
-# Dictionary to map days to numerical values for sorting
-days_mapping = {
-    'Monday': 1,
-    'Tuesday': 2,
-    'Wednesday': 3,
-    'Thursday': 4,
-    'Friday': 5,
-    'Saturday': 6,
-    'Sunday': 7
-}
-
-
-# Dictionary to map times to numerical values for sorting
-times_mapping = {
-    'Morning': 1,
-    'Afternoon': 2,
-    'Evening': 3
-}
-
+@app.route('/filter_map/<name>/<reg_number>', methods=['POST'])
+def filter_map(name, reg_number):
+    day = request.form.get("day")
+    time = request.form.get("time")
+    location = request.form.get("location")
+    charity = request.form.get("charity")
+    logging.info("Received request to filter map by %s, %s, %s, %s", day, time, location, charity)
+    charities = get_all_registered_charities()
+    all_messages = get_all_messages()
+    map_html_string = generate_map(day, time, location, charity)
+    return render_template("main_page.html", 
+                            name=name,
+                            reg_number=reg_number,
+                            all_messages=json.loads(all_messages),
+                            map_html_string=map_html_string,
+                            days=days_mapping,
+                            times=times_mapping,
+                            locations=borough_coordinates,
+                            charities=charities,
+                            selected_day=day,
+                            selected_time=time,
+                            selected_location=location,
+                            selected_charity=charity
+                            )
 
 # Function to establish a database connection
-def generate_map():
-    (curs, config, conn) = connect_to_database()
+def generate_map(day=None, time=None, location=None, charity=None):
+    (curs, config, conn) = connect_to_database() 
+
+    criteria_to_add = []
+    items_to_input = []
+
+    if day:
+        criteria_to_add.append(SCHEMA_NAME + '.schedule.day=%s')
+        items_to_input.append(day)
+    if time:
+        criteria_to_add.append(SCHEMA_NAME + '.schedule.time=%s')
+        items_to_input.append(time)
+    if location:
+        criteria_to_add.append(SCHEMA_NAME + '.schedule.location=%s')
+        items_to_input.append(location)
+    if charity:
+        criteria_to_add.append(SCHEMA_NAME + '.charity.name=%s')
+        items_to_input.append(charity)
+
+    criteria = ''
+    for item in criteria_to_add:
+        if criteria == '':
+            criteria += 'WHERE ' + item
+        else:
+            criteria += ' AND ' + item
+
     try:
-        curs.execute(config['query']['select_all_schedule_by_day'].replace(
-            '@schema_name@', SCHEMA_NAME))
+        curs.execute(config['query']['select_query_experiment'].replace(
+            '@schema_name@', SCHEMA_NAME).replace('@criteria@', criteria), items_to_input)
         rec = curs.fetchall()
         conn.close()
+        return generate_map_html(rec)
     except Exception as c:
         logging.info(c)
         conn.rollback()
         conn.close()
+
+def generate_map_html(schedules):
 
     # Create a base map centered around London
     map_center = [51.509865, -0.118092]  # Coordinates for central London
@@ -471,7 +559,7 @@ def generate_map():
     # Track locations with events
     locations_with_events = set()
 
-    for schedule in rec:
+    for schedule in schedules:
         charity = schedule[5]
         day = schedule[2]
         time = schedule[3]
@@ -540,9 +628,8 @@ def generate_map():
     </tr>
             """.format(location)
 
-            sorted_events = sorted(
-                [schedule for schedule in rec if schedule[4] == location],
-                key=lambda x: (days_mapping[x[2]], times_mapping[x[3]]))
+            sorted_events = sorted([schedule for schedule in schedules if schedule[4] == location],
+                                key=lambda x: (days_mapping[x[2]], times_mapping[x[3]]))
 
             for index, schedule in enumerate(sorted_events):
                 background_color = "#ffffff" if index % 2 == 0 else "#f2f2f2"
@@ -571,4 +658,7 @@ def generate_map():
 
     # Get the map HTML as a string
     map_html_string = my_map._repr_html_()
+
+
     return map_html_string
+
