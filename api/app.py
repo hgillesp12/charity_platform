@@ -12,16 +12,16 @@ app = Flask(__name__)
 
 SCHEMA_NAME = 'test__schema'
 API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
-logging.basicConfig(level=logging.INFO) 
+logging.basicConfig(level=logging.INFO)
+
 
 def connect_to_database():
-    #dirname = os.getcwd()
     script_dir = os.path.dirname(os.path.realpath(__file__))
     config_path = os.path.join(script_dir, 'dbtool.ini')
     config = configparser.ConfigParser()
     config.read(config_path)
     conn = db.connect(dbname=os.getenv('DB_NAME'),
-                      user=os.getenv('DB_USER'), 
+                      user=os.getenv('DB_USER'),
                       password=os.getenv('DB_PASSWORD'),
                       host=os.getenv('DB_HOST'),
                       port=os.getenv('DB_PORT'),
@@ -30,13 +30,15 @@ def connect_to_database():
     curs = conn.cursor()
     return curs, config, conn
 
+
 with app.app_context():
     (curs, config, conn) = connect_to_database()
 
     # Function to create the schema if it does not yet exist
     def create_schema():
         try:
-            curs.execute(config['create_schema']['new_schema'].replace('@schema_name@', SCHEMA_NAME))
+            curs.execute(config['create_schema']['new_schema'].replace(
+                '@schema_name@', SCHEMA_NAME))
             conn.commit()
         except Exception as e:
             logging.info(e)
@@ -45,7 +47,8 @@ with app.app_context():
     # Function to create table (or type) if not exists
     def create_table(create_table_query):
         try:
-            curs.execute(create_table_query.replace('@schema_name@', SCHEMA_NAME))
+            curs.execute(create_table_query.replace(
+                '@schema_name@', SCHEMA_NAME))
             conn.commit()
         except Exception as e:
             logging.info(e)
@@ -66,8 +69,10 @@ with app.app_context():
 
 @app.route('/')
 def send_to_register():
+    message = "Login with your charity registration number"
     return render_template("register.html",
-                           message="Login with your charity registration number")
+                           message=message)
+
 
 @app.route('/about')
 def send_to_about():
@@ -76,7 +81,9 @@ def send_to_about():
 
 @app.route('/post_message/<name>/<reg_number>')
 def post_new_message(name, reg_number):
-    return render_template("post_message.html", name=name, reg_number=reg_number,
+    return render_template("post_message.html",
+                           name=name,
+                           reg_number=reg_number,
                            content="Post a new message!")
 
 
@@ -98,14 +105,12 @@ def send_to_profile_page():
     reg_number = request.form.get("reg_number")
     response = check_charity_reg_number(reg_number)
     if not response:
-        return render_template("register.html", 
+        return render_template("register.html",
                                message="Invalid charity ID number! Try again.")
     charity_info = response.json()
     name = charity_info["charity_name"].title()
-
-
     register_first = "Registration not found - please register first"
-    
+
     # add check to make sure the charity logging in is already registered
     curs, config, conn = connect_to_database()
     try:
@@ -118,30 +123,29 @@ def send_to_profile_page():
             logging.info("Charity %s successfully logged in", reg_number)
             all_messages = get_all_messages()
             map_html_string = generate_map()
-            return render_template("main_page.html", 
-                                    name=name,
-                                    reg_number=reg_number,
-                                    all_messages=json.loads(all_messages),
-                                    map_html_string=map_html_string
-                                    )
-
-
+            return render_template(
+                "main_page.html", name=name, reg_number=reg_number,
+                all_messages=json.loads(all_messages),
+                map_html_string=map_html_string
+                )
         else:
             conn.close()
-            logging.info("Charity %s tried to log in but is not yet registered", reg_number)
-            return render_template("register.html", message=register_first)  
+            logging.info(
+                "Charity %s tried to log in but is not yet registered",
+                reg_number)
+            return render_template("register.html", message=register_first)
     except Exception as e:
         logging.error(e)
         conn.rollback
         conn.close()
-        return render_template("register.html", message=register_first) 
+        return render_template("register.html", message=register_first)
 
 
 @app.route('/registration_submit', methods=["POST"])
 def reg_number_submit():
     reg_number = request.form.get("reg_number")
     response = check_charity_reg_number(reg_number)
-    
+
     invalid_message = "Invalid registration number - please try again"
     already_registerd = "Your charity is already registered - please log in"
     unknown_error = "Unkown error - please try again"
@@ -172,24 +176,27 @@ def reg_number_submit():
         logging.error(e)
         conn.rollback
         conn.close()
-        return render_template("register.html", message=unknown_error) 
+        return render_template("register.html", message=unknown_error)
 
     # charity is not in the database, so add it
-    try: 
+    try:
         curs.execute(config['insert_into']['charity_table'].replace(
             '@schema_name@', SCHEMA_NAME), [name, reg_number]
         )
         if curs.rowcount == 1:
             conn.commit()
             conn.close()
-            logging.info("Added charity %s %s to the database", name, reg_number)
-            return render_template("questionnaire.html", 
-                                   name=name, 
-                                   reg_number=reg_number, 
-                                   message="Please complete the following form")
+            logging.info("Added charity %s %s to the database",
+                         name, reg_number)
+            return render_template("questionnaire.html",
+                                   name=name,
+                                   reg_number=reg_number,
+                                   message="Please complete the following form"
+                                   )
         else:
             conn.close()
-            logging.error("Unable to add %s %s to the database", name, reg_number)
+            logging.error("Unable to add %s %s to the database",
+                          name, reg_number)
             return render_template("register.html", message=invalid_message)
     except Exception as e:
         conn.rollback
@@ -200,8 +207,8 @@ def reg_number_submit():
 
 @app.route('/questionnaire/<name>/<reg_number>')
 def submit_new_schedule(name, reg_number):
-    return render_template("questionnaire.html", 
-                           name=name, 
+    return render_template("questionnaire.html",
+                           name=name,
                            reg_number=reg_number,
                            message="Submit a new schedule")
 
@@ -210,13 +217,12 @@ def submit_new_schedule(name, reg_number):
 def back_home(name, reg_number):
     all_messages = get_all_messages()
     map_html_string = generate_map()
-    return render_template("main_page.html", 
-                            name=name,
-                            reg_number=reg_number,
-                            all_messages=json.loads(all_messages),
-                            map_html_string=map_html_string
-                            )
-
+    return render_template("main_page.html",
+                           name=name,
+                           reg_number=reg_number,
+                           all_messages=json.loads(all_messages),
+                           map_html_string=map_html_string
+                           )
 
 
 def get_all_messages():
@@ -227,18 +233,22 @@ def get_all_messages():
         "date_time": []
     }
     try:
-        curs.execute(config['query']['select_all_message_with_names_order_by_timestamp_desc'].replace('@schema_name@', SCHEMA_NAME))
+        curs.execute(
+            config['query'][
+                'select_all_message_with_names_order_by_timestamp_desc'
+                ].replace('@schema_name@', SCHEMA_NAME))
         all_messages = curs.fetchall()
         for message_info in all_messages:
             message_table["sender_name"].append(message_info[4])
             message_table["content"].append(message_info[2])
-            message_table["date_time"].append(message_info[3].strftime("%d/%m/%Y, %H:%M:%S"))
+            message_table["date_time"].append(
+                message_info[3].strftime("%d/%m/%Y, %H:%M:%S"))
         conn.close()
-        message_json = json.dumps(message_table, indent = 4) 
+        message_json = json.dumps(message_table, indent=4)
         return message_json
     except Exception as e:
         logging.info(e)
-        conn.rollback()   
+        conn.rollback()
         conn.close()
 
 
@@ -253,14 +263,16 @@ def schedule_submit(name, reg_number):
     successful_add = "Schedule added"
 
     if not (day and time and location):
-        logging.info("Missing data in schedule submission: %s, %s, %s", day, time, location)
-        return render_template("questionnaire.html", 
-                               name=name, 
+        logging.info("Missing data in schedule submission: %s, %s, %s",
+                     day, time, location)
+        return render_template("questionnaire.html",
+                               name=name,
                                reg_number=reg_number,
                                message=missing_data)
-    
-    logging.info("Received request to save schedule with %s, %s, and %s", day, time, location)
-    
+
+    logging.info("Received request to save schedule with %s, %s, and %s",
+                 day, time, location)
+
     curs, config, conn = connect_to_database()
     try:
         curs.execute(config['insert_into']['schedule_table'].replace(
@@ -269,28 +281,30 @@ def schedule_submit(name, reg_number):
         if curs.rowcount == 1:
             conn.commit()
             conn.close()
-            logging.info("Added schedule %s, %s, %s, %s to the database", reg_number, day, time, location)
-            return render_template("questionnaire.html", 
-                        name=name, 
-                        reg_number=reg_number, 
-                        message=successful_add)
+            logging.info("Added schedule %s, %s, %s, %s to the database",
+                         reg_number, day, time, location)
+            return render_template("questionnaire.html",
+                                   name=name,
+                                   reg_number=reg_number,
+                                   message=successful_add)
         else:
             conn.close()
-            logging.info("Unable to add schedule %s, %s, %s, %s to the database", reg_number, day, time, location)
-            return render_template("questionnaire.html", 
-                                   name=name, 
-                                   reg_number=reg_number, 
+            logging.info(
+                "Unable to add schedule %s, %s, %s, %s to the database",
+                reg_number, day, time, location)
+            return render_template("questionnaire.html",
+                                   name=name,
+                                   reg_number=reg_number,
                                    message=not_added_correct)
     except Exception as e:
         conn.rollback
         conn.close()
         logging.error(e)
-        return render_template("questionnaire.html", 
-                               name=name, 
+        return render_template("questionnaire.html",
+                               name=name,
                                reg_number=reg_number,
-                               message=not_added_correct)
-    
-
+                               message=not_added_correct
+                               )
 
 
 @app.route('/post_message/<name>/<reg_number>', methods=["POST"])
@@ -298,26 +312,26 @@ def post_message(name, reg_number):
     message = request.form.get("message")
     now = datetime.now()
     sql_timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
-    
+
     add_message = "Add a message to post."
     error_message = "Message could not be posted."
 
     if 'cancel' in request.form:
         all_messages = get_all_messages()
         map_html_string = generate_map()
-        return render_template("main_page.html", 
-                                name=name,
-                                reg_number=reg_number,
-                                all_messages=json.loads(all_messages),
-                                map_html_string=map_html_string
-                                )
+        return render_template("main_page.html",
+                               name=name,
+                               reg_number=reg_number,
+                               all_messages=json.loads(all_messages),
+                               map_html_string=map_html_string
+                               )
     if not message:
         logging.info("Missing message content")
         return render_template("post_message.html",
                                name=name,
                                reg_number=reg_number,
                                content=add_message)
-    
+
     logging.info("Received request to save new message from %s", reg_number)
 
     curs, config, conn = connect_to_database()
@@ -331,18 +345,19 @@ def post_message(name, reg_number):
             logging.info("Added message to database")
             all_messages = get_all_messages()
             map_html_string = generate_map()
-            return render_template("main_page.html", 
-                                    name=name,
-                                    reg_number=reg_number,
-                                    all_messages=json.loads(all_messages),
-                                    map_html_string=map_html_string
-                                    )
+            return render_template("main_page.html",
+                                   name=name,
+                                   reg_number=reg_number,
+                                   all_messages=json.loads(all_messages),
+                                   map_html_string=map_html_string
+                                   )
         else:
             conn.close()
-            logging.info("Unable to add message from %s to the database", reg_number)
+            logging.info("Unable to add message from %s to the database",
+                         reg_number)
             return render_template("post_message.html",
                                    name=name,
-                                   reg_number=reg_number, 
+                                   reg_number=reg_number,
                                    content=error_message)
     except Exception as e:
         conn.rollback
@@ -350,7 +365,7 @@ def post_message(name, reg_number):
         logging.error(e)
         return render_template("post_message.html",
                                name=name,
-                               reg_number=reg_number, 
+                               reg_number=reg_number,
                                content=error_message)
 
 
@@ -362,22 +377,22 @@ def get_all_schedules():
         "date_time": []
     }
     try:
-        curs.execute(config['query']['select_all_message_with_names_order_by_timestamp_desc'].replace('@schema_name@', SCHEMA_NAME))
+        curs.execute(config['query'][
+            'select_all_message_with_names_order_by_timestamp_desc'
+            ].replace('@schema_name@', SCHEMA_NAME))
         all_messages = curs.fetchall()
         for message_info in all_messages:
             message_table["sender_name"].append(message_info[4])
             message_table["content"].append(message_info[2])
-            message_table["date_time"].append(message_info[3].strftime("%d/%m/%Y, %H:%M:%S"))
+            message_table["date_time"].append(
+                message_info[3].strftime("%d/%m/%Y, %H:%M:%S"))
         conn.close()
-        message_json = json.dumps(message_table, indent = 4) 
+        message_json = json.dumps(message_table, indent=4)
         return message_json
     except Exception as e:
         logging.info(e)
-        conn.rollback()   
+        conn.rollback()
         conn.close()
-
-
-
 
 
 borough_coordinates = {
@@ -427,6 +442,7 @@ days_mapping = {
     'Sunday': 7
 }
 
+
 # Dictionary to map times to numerical values for sorting
 times_mapping = {
     'Morning': 1,
@@ -437,7 +453,7 @@ times_mapping = {
 
 # Function to establish a database connection
 def generate_map():
-    (curs, config, conn) = connect_to_database() 
+    (curs, config, conn) = connect_to_database()
     try:
         curs.execute(config['query']['select_all_schedule_by_day'].replace(
             '@schema_name@', SCHEMA_NAME))
@@ -448,7 +464,6 @@ def generate_map():
         conn.rollback()
         conn.close()
 
-
     # Create a base map centered around London
     map_center = [51.509865, -0.118092]  # Coordinates for central London
     my_map = folium.Map(location=map_center, zoom_start=11)
@@ -456,13 +471,13 @@ def generate_map():
     # Track locations with events
     locations_with_events = set()
 
-
     for schedule in rec:
         charity = schedule[5]
         day = schedule[2]
         time = schedule[3]
         location = schedule[4]
-        popup_content = f"Charity: {charity}<br>Day: {day}<br>Time: {time}<br>Location: {location}"
+        popup_content = f"Charity: {charity}<br>Day: \
+            {day}<br>Time: {time}<br>Location: {location}"
 
         # Add information to the respective borough
         if location in borough_coordinates:
@@ -470,10 +485,13 @@ def generate_map():
             if 'popup' not in borough_coordinates[location]:
                 borough_coordinates[location]['popup'] = popup_content
             else:
-                borough_coordinates[location]['popup'] += f"<br><br>{popup_content}"
+                borough_coordinates[
+                    location]['popup'] += f"<br><br>{popup_content}"
 
     # Get the absolute path to the GeoJSON file
-    geojson_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'london_boroughs.geojson'))
+    geojson_path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__), '..', 'london_boroughs.geojson'))
 
     # Load the GeoJSON file with London borough boundaries
     with open(geojson_path, "r") as geojson_file:
@@ -497,41 +515,50 @@ def generate_map():
             'weight': 3,
             'fillOpacity': 0.40
         },
-        #tooltip=folium.GeoJsonTooltip(fields=['name'], aliases=['Borough'])
+        # tooltip=folium.GeoJsonTooltip(fields=['name'], aliases=['Borough'])
     ).add_to(my_map)
-
 
     # Add event information to boroughs
     for location, data in borough_coordinates.items():
         if location in locations_with_events and data['popup']:
             # Create an HTML table string for the popup
             table_content = """
-            <table style="width:100%; border-collapse: collapse; margin-top: 15px;">
-                <tr>
-                    <th colspan="4" style="text-align: center; font-size: 16px; padding-bottom: 10px; background-color: #FFFFFF;">{}</th>
-                </tr>
-                <tr>
-                    <th style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">Charity</th>
-                    <th style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">Day</th>
-                    <th style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">Time</th>
-                    <th style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">Location</th>
-                </tr>
+<table style="width:100%; border-collapse: collapse; margin-top: 15px;">
+    <tr>
+        <th colspan="4" style="text-align: center; font-size: 16px; \
+            padding-bottom: 10px; background-color: #FFFFFF;">{}</th>
+    </tr>
+    <tr>
+        <th style="padding: 3px; text-align: left; border-bottom: \
+            1px solid #ddd; padding-right: 15px;">Charity</th>
+        <th style="padding: 3px; text-align: left; border-bottom: \
+            1px solid #ddd; padding-right: 15px;">Day</th>
+        <th style="padding: 3px; text-align: left; border-bottom: \
+            1px solid #ddd; padding-right: 15px;">Time</th>
+        <th style="padding: 3px; text-align: left; border-bottom: \
+            1px solid #ddd; padding-right: 15px;">Location</th>
+    </tr>
             """.format(location)
 
-            sorted_events = sorted([schedule for schedule in rec if schedule[4] == location],
-                                key=lambda x: (days_mapping[x[2]], times_mapping[x[3]]))
+            sorted_events = sorted(
+                [schedule for schedule in rec if schedule[4] == location],
+                key=lambda x: (days_mapping[x[2]], times_mapping[x[3]]))
 
             for index, schedule in enumerate(sorted_events):
                 background_color = "#ffffff" if index % 2 == 0 else "#f2f2f2"
 
                 table_content += f"""
-                <tr style="background-color: {background_color};">
-                    <td style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">{schedule[5]}</td>
-                    <td style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">{schedule[2]}</td>
-                    <td style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">{schedule[3]}</td>
-                    <td style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">{schedule[4]}</td>
-                </tr>
-                """
+<tr style="background-color: {background_color};">
+    <td style="padding: 3px; text-align: left; border-bottom: \
+        1px solid #ddd; padding-right: 15px;">{schedule[5]}</td>
+    <td style="padding: 3px; text-align: left; border-bottom: \
+        1px solid #ddd; padding-right: 15px;">{schedule[2]}</td>
+    <td style="padding: 3px; text-align: left; border-bottom: \
+        1px solid #ddd; padding-right: 15px;">{schedule[3]}</td>
+    <td style="padding: 3px; text-align: left; border-bottom: \
+        1px solid #ddd; padding-right: 15px;">{schedule[4]}</td>
+</tr>
+"""
 
             table_content += "</table>"
 
@@ -544,6 +571,4 @@ def generate_map():
 
     # Get the map HTML as a string
     map_html_string = my_map._repr_html_()
-
-
     return map_html_string
