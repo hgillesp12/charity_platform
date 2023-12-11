@@ -15,8 +15,12 @@
   </head>
   <body>
     <div class="navbar">
+      <div class="navbar-name">
+        <p>UnityImpact</p>
+      </div>
       <div class="navbar-links">
         <a href="/about">About the idea</a>
+        <a href="/">Logout</a>
       </div>
     </div>
     <div class="main-content">
@@ -32,7 +36,7 @@
                 <p>{{message}}</p>
                 <div class="text-center">
                   <p>{{ content }}</p>
-                  <p>From: {{ name|replace('%20', ' ') }}</p>
+                  <p>Hello {{ name|replace('%20', ' ') }}</p>
                 </div>
                 <div>
                   <textarea

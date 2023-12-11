@@ -12,17 +12,26 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles.css') }}"
     />
+    <link
+      rel="stylesheet" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
   </head>
   <body>
     <!-- Navbar -->
     <div class="navbar">
+      <div class="navbar-name">
+        <p>UnityImpact</p>
+      </div>
       <div class="navbar-links">
         <a href="/about">About the idea</a>
+        <a href="/">Logout</a>
       </div>
     </div>
 
     <!-- Main Content -->
     <div class="container main-content">
+      <h1>Hello {{ name|replace('%20', ' ') }}</h1>
       <div class="container">
         <div class="row justify-content-between">
             <form action="/filter_map/{{ name }}/{{ reg_number }}" method="post">
@@ -89,6 +98,62 @@
 
       <hr style="margin-bottom: 20px; margin-top: 50px;"/>
 
+      <!-- Current schedule -->
+      <div class="row margin-row">
+        <div class="col-md-6 col-lg-6">
+          <h1>Your scheduled events</h1>
+        </div>
+        <div class="col-md-6 col-lg-6 text-right">
+          <a
+            class="btn custom-button btn-primary1 btn-register-page"
+            href="/questionnaire/{{ name }}/{{ reg_number }}"
+          >
+            Add new schedule
+          </a>
+        </div>
+      </div>
+
+      <!-- Events -->
+      <div class="events">
+        {% if schedule %}
+        <table class="table">
+          <thead>
+              <tr>
+                  <th scope="col" class="text-center">Day</th>
+                  <th scope="col" class="text-center">Time</th>
+                  <th scope="col" class="text-center">Location</th>
+                  <th scope="col"class="text-right col-sm-2"></th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for i in range(schedule.id|length) %}
+              <tr>
+                  <td class="text-center">{{ schedule['day'][i] }}</td>
+                  <td class="text-center">{{ schedule['time'][i] }}</td>
+                  <td class="text-center">{{ schedule['location'][i] }}</td>
+                  <td>
+                      <form action="/delete_event/{{ name }}/{{ reg_number }}" method="post">
+                          <input type="hidden" name="rowId" value="{{ schedule['id'][i] }}">
+                          <button type="submit" class="btn btn-secondary">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                      </form>
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+      {% else %}
+        <div class="col">
+          <div class="card custom-card">
+            <div class="card-body text-center">
+              <p>No events to display.</p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
       <!-- Bulletin Board Section -->
       <div class="row margin-row">
         <div class="col-md-6 col-lg-6">
@@ -100,12 +165,6 @@
             href="/post_message/{{ name }}/{{ reg_number }}"
           >
             Post message
-          </a>
-          <a
-            class="btn custom-button btn-primary1 btn-register-page"
-            href="/questionnaire/{{ name }}/{{ reg_number }}"
-          >
-            Add new schedule
           </a>
         </div>
       </div>
@@ -119,7 +178,7 @@
             <div>
               <div class="row">
                 <div class="col">
-                  <strong>From:</strong> {{ all_messages['sender_name'][i] }}
+                  <strong>From: </strong><a href="{{ url_for('send_to_contact_page', original_name=name, original_reg_number=reg_number, name=all_messages['sender_name'][i], reg_number=all_messages['sender_number'][i]) }}">{{ all_messages['sender_name'][i] }}</a>
                 </div>
                 <div class="col">
                   <strong>Message:</strong> {{ all_messages['content'][i] }}
