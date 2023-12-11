@@ -41,12 +41,11 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
   deploy-to-vercel:
-    needs: run-unit-tests
+    needs: 
+      - run-unit-tests
+      branch:
+        - main
     runs-on: ubuntu-latest
-    on:
-      push:
-        branches:
-          - main
     steps:
       - name: Checkout
         uses: actions/checkout@v3
