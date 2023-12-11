@@ -454,8 +454,8 @@ def get_all_schedules():
         conn.close()
 
 
-@app.route('/contact_info/<name>/<reg_number>')
-def send_to_contact_page(name, reg_number):
+@app.route('/contact_info/<original_name>/<original_reg_number>/<name>/<reg_number>')
+def send_to_contact_page(original_name, original_reg_number, name, reg_number):
     response = get_charity_contact_info(reg_number)
 
     if response:
@@ -470,7 +470,9 @@ def send_to_contact_page(name, reg_number):
                                address=address,
                                phone_number=phone_number,
                                email=email,
-                               website=website)
+                               website=website,
+                               original_name=original_name,
+                               original_reg_number=original_reg_number)
     else:
         return render_template("contact_info.html",
                                name=None

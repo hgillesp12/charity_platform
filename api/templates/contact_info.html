@@ -43,7 +43,7 @@
           </div>
           <div class="row mb-3">
               <div class="col">
-                  <strong>Website:</strong> {{ website }}
+                  <strong>Website:</strong> <a href="https://{{ website }}" target="_blank">{{ website }}</a>
               </div>
           </div>
           <div class="row mb-3">
@@ -59,6 +59,15 @@
           </div>
         </div>
         {% endif %}
+      </div>
+      <div class="row justify-content-center">
+        <div class="col">
+          <a
+            class="btn btn-subtle"
+            href="/main/{{ original_name }}/{{ original_reg_number }}"
+            >Back to home</a
+          >
+        </div>
       </div>
     </div>
 
