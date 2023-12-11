@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Bootstrap CSS CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="navbar-name">
+        <p>UnityImpact</p>
+      </div>
+      <div class="navbar-links">
+        <a href="/about">About the idea</a>
+        <a href="/">Back to login</a>
+      </div>
+    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="center-card">
+        <div class="card custom-card">
+          <div class="card-body text-center">
+          {% if name %}
+          <div class="row justify-content-center">
+            <p class="contact-info-header">Contact information for {{ name|replace('%20', ' ') }}</p><br>
+          <div class="contact">
+            <div class="row mb-3">
+              <div class="col">
+                  <strong>Email:</strong> <a href="mailto:{{ website }}">{{ email }}</a>
+              </div>
+          </div>
+          <div class="row mb-3">
+              <div class="col">
+                  <strong>Number:</strong> <a href="tel:{{ phone_number }}">{{ phone_number }}</a>
+              </div>
+          </div>
+          <div class="row mb-3">
+              <div class="col">
+                  <strong>Website:</strong> <a href="https://{{ website }}" target="_blank">{{ website }}</a>
+              </div>
+          </div>
+          <div class="row mb-3">
+              <div class="col">
+                  <strong>Address:</strong> <a href="https://maps.google.com/?q={{ address }}">{{ address }}</a>
+              </div>
+          </div>
+        </div>
+        {% else %}
+        <div class="col">
+          <div class="card-body text-center">
+            <p>No info to display.</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="container">
+        <div class="row justify-content-center">
+            <a
+              class="btn custom-button btn-primary1 btn-register-page"
+              href="/main/{{ original_name }}/{{ original_reg_number }}"
+              >Back to home</a
+            >
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

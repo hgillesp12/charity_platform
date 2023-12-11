@@ -129,9 +129,18 @@ body {
   width: 100%;
   z-index: 1000; /* Ensures navbar stays on top */
   display: flex; /* Enables flexbox */
-  justify-content: flex-end; /* Aligns children (links) to the right */
+  justify-content: space-between; /* Aligns children (links) to the right */
   align-items: center; /* Centers children vertically */
   padding-right: 20px;
+}
+
+.navbar-name {
+  margin-top: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: black;
+  text-align: left; /* Aligns text to the left */
+  height: 100%;
 }
 
 .navbar-links {
@@ -168,4 +177,14 @@ body {
 
 .navbar-links a:hover::after {
   transform: translateY(0); /* Moves the underline up on hover */
+}
+
+.fa-trash-can {
+  font-size: 20px;
+  color:white
+}
+
+.contact-info-header{
+  font-size: 24px;
+  text-align: center;
 }

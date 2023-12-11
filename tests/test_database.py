@@ -182,11 +182,6 @@ def test_inserting_multiple_items_into_schedule_table(connect_to_database, creat
     assert(len(rec_location) == 5)
 
 
-
-
-    ## TODO: Add a filter to search by charity name? although may not be unique... ## 
-
-
 def test_inserting_single_item_into_message_table(connect_to_database, create_message_table):
     (curs, config) = connect_to_database
     # Set up charity table with at least one entry
@@ -288,6 +283,48 @@ def test_inserting_multiple_items_into_message_table(connect_to_database, create
     rec = curs.fetchall()
     assert(len(rec) == 2)
 
+
+def test_deleting_single_item_from_schedule_table(connect_to_database, create_schedule_table):
+    (curs, config) = connect_to_database
+    # Set up charity table with at least one entry
+    curs.execute(config['insert_into']['charity_table'].replace(
+        '@schema_name@', SCHEMA_NAME), ['SVP', 123]
+    )
+
+    # Schedule table should initially be empty
+    curs.execute(config['query']['select_all'].replace(
+        '@schema_name@', SCHEMA_NAME).replace(
+        '@table_name@', 'schedule'
+    ))
+    rec = curs.fetchall()
+    assert(len(rec) == 0)
+
+    # Insert single entry into schedule table and assert presence
+    curs.execute(config['insert_into']['schedule_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [123, 'Monday', 'Afternoon', 'Chelsea']
+    )
+
+    curs.execute(config['query']['select_all'].replace(
+        '@schema_name@', SCHEMA_NAME).replace(
+        '@table_name@', 'schedule'
+    ))
+    rec = curs.fetchall()
+    assert(len(rec) == 1)
+
+    # Delete single entry from schedule table
+    curs.execute(config['delete_from']['delete_event_from_schedule'].replace(
+        '@schema_name@', SCHEMA_NAME), [1]
+    )
+
+    # Schedule table should initially be empty
+    curs.execute(config['query']['select_all'].replace(
+        '@schema_name@', SCHEMA_NAME).replace(
+        '@table_name@', 'schedule'
+    ))
+    rec = curs.fetchall()
+    assert(len(rec) == 0)
+
+
 def test_flexible_query(connect_to_database, create_schedule_table):
     (curs, config) = connect_to_database
     # Set up charity table with multiple entities
@@ -314,13 +351,12 @@ def test_flexible_query(connect_to_database, create_schedule_table):
     curs.execute(config['insert_into']['schedule_table'].replace(
         '@schema_name@', SCHEMA_NAME), [123, 'Wednesday', 'Afternoon', 'Ealing']
     )
+    
     curs.execute(config['query']['select_all'].replace(
         '@schema_name@', SCHEMA_NAME).replace(
         '@table_name@', 'schedule'
     ))
     rec = curs.fetchall()
-    print(rec)
-    print(len(rec))
     assert(len(rec) == 5)
 
     criteria_to_add = []
@@ -387,6 +423,4 @@ def test_flexible_query(connect_to_database, create_schedule_table):
     curs.execute(config['query']['select_query_experiment'].replace(
             '@schema_name@', SCHEMA_NAME).replace('@criteria@', criteria), items_to_input)
     rec = curs.fetchall()
-    print(rec)
-    print(len(rec))
     assert(len(rec) == 2)
