@@ -287,3 +287,43 @@ def test_inserting_multiple_items_into_message_table(connect_to_database, create
     )
     rec = curs.fetchall()
     assert(len(rec) == 2)
+
+
+def test_deleting_single_item_from_schedule_table(connect_to_database, create_charity_table):
+    (curs, config) = connect_to_database
+    # Set up charity table with at least one entry
+    curs.execute(config['insert_into']['charity_table'].replace(
+        '@schema_name@', SCHEMA_NAME), ['SVP', 123]
+    )
+
+    # Schedule table should initially be empty
+    curs.execute(config['query']['select_all'].replace(
+        '@schema_name@', SCHEMA_NAME).replace(
+        '@table_name@', 'schedule'
+    ))
+    rec = curs.fetchall()
+    assert(len(rec) == 0)
+
+    # Insert single entry into schedule table and assert presence
+    curs.execute(config['insert_into']['schedule_table'].replace(
+        '@schema_name@', SCHEMA_NAME), [123, 'Monday', 'Afternoon', 'Chelsea']
+    )
+    curs.execute(config['query']['select_all'].replace(
+        '@schema_name@', SCHEMA_NAME).replace(
+        '@table_name@', 'schedule'
+    ))
+    rec = curs.fetchall()
+    assert(len(rec) == 1)
+
+    # Delete single entry from schedule table
+    curs.execute(config['delete_from']['delete_event_from_schedule'].replace(
+        '@schema_name@', SCHEMA_NAME), [123]
+    )
+
+    # Schedule table should initially be empty
+    curs.execute(config['query']['select_all'].replace(
+        '@schema_name@', SCHEMA_NAME).replace(
+        '@table_name@', 'schedule'
+    ))
+    rec = curs.fetchall()
+    assert(len(rec) == 0)
