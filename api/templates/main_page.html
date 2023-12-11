@@ -32,6 +32,61 @@
     <!-- Main Content -->
     <div class="container main-content">
       <h1>Hello {{ name|replace('%20', ' ') }}</h1>
+      <div class="container">
+        <div class="row justify-content-between">
+            <form action="/filter_map/{{ name }}/{{ reg_number }}" method="post">
+                <!-- Filter section -->
+                <div class="row">
+                    <!-- Day Dropdown -->
+                    <div class="col-md-2">
+                        <select class="filter form-control" id="day" name="day">
+                            <option value="" {% if not selected_day %}selected{% endif %}>All Days</option>
+                            {% for day in days %}
+                            <option value="{{ day }}" {% if selected_day == day %}selected{% endif %}>{{ day }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+    
+                    <!-- Time Dropdown -->
+                    <div class="col-md-2">
+                        <select class="filter form-control" id="time" name="time">
+                            <option value="" {% if not selected_time %}selected{% endif %}>All Times</option>
+                            {% for time in times %}
+                            <option value="{{ time }}" {% if selected_time == time %}selected{% endif %}>{{ time }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+    
+                    <!-- Location Dropdown -->
+                    <div class="col-md-2">
+                        <select class="filter form-control" id="location" name="location">
+                            <option value="" {% if not selected_location %}selected{% endif %}>All Locations</option>
+                            {% for location in locations %}
+                            <option value="{{ location }}" {% if selected_location == location %}selected{% endif %}>{{ location }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+    
+                    <!-- Charity Name Dropdown -->
+                    <div class="col-md-3">
+                        <select class="filter form-control" id="charity" name="charity">
+                            <option value="" {% if not selected_charity %}selected{% endif %}>All Registered Charities</option>
+                            {% for charity in charities %}
+                            <option value="{{ charity }}" {% if selected_charity == charity %}selected{% endif %}>{{ charity }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+    
+                    <!-- Submit Button -->
+                    <div class="col-md-2">
+                        <input class="btn custom-button btn-primary1 btn-register-page" type="submit" name="submit" value="Filter" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+      
+
       <!-- Map Section -->
       <div class="row margin-row">
         <div class="col">
@@ -40,6 +95,8 @@
           </div>
         </div>
       </div>
+
+      <hr style="margin-bottom: 20px; margin-top: 50px;"/>
 
       <!-- Current schedule -->
       <div class="row margin-row">
