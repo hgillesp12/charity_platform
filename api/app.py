@@ -457,6 +457,7 @@ def get_all_schedules():
 @app.route('/contact_info/<original_name>/<original_reg_number>/<name>/<reg_number>')
 def send_to_contact_page(original_name, original_reg_number, name, reg_number):
     response = get_charity_contact_info(reg_number)
+    decoded_name = unquote(original_name)
 
     if response:
         charity_contact_info = response.json()
@@ -471,7 +472,7 @@ def send_to_contact_page(original_name, original_reg_number, name, reg_number):
                                phone_number=phone_number,
                                email=email,
                                website=website,
-                               original_name=original_name,
+                               original_name=decoded_name,
                                original_reg_number=original_reg_number)
     else:
         return render_template("contact_info.html",
