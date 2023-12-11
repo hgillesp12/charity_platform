@@ -27,18 +27,19 @@
     <div class="main-content">
       <div class="center-card">
         <div class="card custom-card">
+          <div class="card-body text-center">
           {% if name %}
           <div class="row justify-content-center">
             <p class="contact-info-header">Contact information for {{ name|replace('%20', ' ') }}</p><br>
           <div class="contact">
             <div class="row mb-3">
               <div class="col">
-                  <strong>Email:</strong> {{ email }}
+                  <strong>Email:</strong> <a href="mailto:{{ website }}">{{ email }}</a>
               </div>
           </div>
           <div class="row mb-3">
               <div class="col">
-                  <strong>Number:</strong> {{ phone_number }}
+                  <strong>Number:</strong> <a href="tel:{{ phone_number }}">{{ phone_number }}</a>
               </div>
           </div>
           <div class="row mb-3">
@@ -48,7 +49,7 @@
           </div>
           <div class="row mb-3">
               <div class="col">
-                  <strong>Address:</strong> {{ address }}
+                  <strong>Address:</strong> <a href="https://maps.google.com/?q={{ address }}">{{ address }}</a>
               </div>
           </div>
         </div>
@@ -60,14 +61,15 @@
         </div>
         {% endif %}
       </div>
-      <div class="row justify-content-center">
-        <div class="col">
-          <a
-            class="btn btn-subtle"
-            href="/main/{{ original_name }}/{{ original_reg_number }}"
-            >Back to home</a
-          >
+      <div class="container">
+        <div class="row justify-content-center">
+            <a
+              class="btn custom-button btn-primary1 btn-register-page"
+              href="/main/{{ original_name }}/{{ original_reg_number }}"
+              >Back to home</a
+            >
         </div>
+      </div>
       </div>
     </div>
 

@@ -121,7 +121,7 @@
             <div>
               <div class="row">
                 <div class="col">
-                  <strong>From: </strong><a href="{{ url_for('send_to_contact_page', name=all_messages['sender_name'][i], reg_number=all_messages['sender_number'][i]) }}">{{ all_messages['sender_name'][i] }}</a>
+                  <strong>From: </strong><a href="{{ url_for('send_to_contact_page', original_name=name, original_reg_number=reg_number, name=all_messages['sender_name'][i], reg_number=all_messages['sender_number'][i]) }}">{{ all_messages['sender_name'][i] }}</a>
                 </div>
                 <div class="col">
                   <strong>Message:</strong> {{ all_messages['content'][i] }}
