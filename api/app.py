@@ -538,8 +538,8 @@ def delete_event(name, reg_number):
                     reg_number=reg_number))
 
 
-@app.route('/contact_info/<original_name>/\
-    <original_reg_number>/<name>/<reg_number>')
+@app.route(
+    '/contact_info/<original_name>/<original_reg_number>/<name>/<reg_number>')
 def send_to_contact_page(original_name, original_reg_number, name, reg_number):
     response = get_charity_contact_info(reg_number)
     decoded_name = unquote(original_name)
