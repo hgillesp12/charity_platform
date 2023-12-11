@@ -289,7 +289,7 @@ def test_inserting_multiple_items_into_message_table(connect_to_database, create
     assert(len(rec) == 2)
 
 
-def test_deleting_single_item_from_schedule_table(connect_to_database, create_charity_table):
+def test_deleting_single_item_from_schedule_table(connect_to_database, create_schedule_table):
     (curs, config) = connect_to_database
     # Set up charity table with at least one entry
     curs.execute(config['insert_into']['charity_table'].replace(
@@ -317,7 +317,7 @@ def test_deleting_single_item_from_schedule_table(connect_to_database, create_ch
 
     # Delete single entry from schedule table
     curs.execute(config['delete_from']['delete_event_from_schedule'].replace(
-        '@schema_name@', SCHEMA_NAME), [123]
+        '@schema_name@', SCHEMA_NAME), [1]
     )
 
     # Schedule table should initially be empty
