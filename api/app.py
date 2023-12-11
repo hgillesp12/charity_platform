@@ -12,7 +12,7 @@ import logging
 
 app = Flask(__name__)
 
-SCHEMA_NAME = 'test__schema'
+SCHEMA_NAME = 'live_demo'
 API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 logging.basicConfig(level=logging.INFO)
 
@@ -53,6 +53,7 @@ borough_coordinates = {
     "Westminster": {"coordinates": [51.4973, -0.1372], "popup": ""}
 }
 
+
 # Dictionary to map days to numerical values for sorting
 days_mapping = {
     'Monday': 1,
@@ -64,12 +65,14 @@ days_mapping = {
     'Sunday': 7
 }
 
+
 # Dictionary to map times to numerical values for sorting
 times_mapping = {
     'Morning': 1,
     'Afternoon': 2,
     'Evening': 3
 }
+
 
 def connect_to_database():
     script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -93,8 +96,8 @@ with app.app_context():
     # Function to create the schema if it does not yet exist
     def create_schema():
         try:
-            curs.execute(config['create_schema']['new_schema'].replace
-                         ('@schema_name@', SCHEMA_NAME))
+            curs.execute(config['create_schema']['new_schema'].replace(
+                '@schema_name@', SCHEMA_NAME))
             conn.commit()
         except Exception as e:
             logging.info(e)
@@ -103,8 +106,8 @@ with app.app_context():
     # Function to create table (or type) if not exists
     def create_table(create_table_query):
         try:
-            curs.execute(create_table_query.replace
-                         ('@schema_name@', SCHEMA_NAME))
+            curs.execute(create_table_query.replace(
+                '@schema_name@', SCHEMA_NAME))
             conn.commit()
         except Exception as e:
             logging.info(e)
@@ -125,9 +128,9 @@ with app.app_context():
 
 @app.route('/')
 def send_to_register():
+    message = "Login with your charity registration number"
     return render_template("register.html",
-                           message="Login with your charity registration \
-                            number")
+                           message=message)
 
 
 @app.route('/about')
@@ -160,7 +163,8 @@ def get_all_registered_charities():
     all_charities = []
     (curs, config, conn) = connect_to_database()
     try:
-        curs.execute(config['query']['select_all_registered_charities'].replace(
+        curs.execute(config['query'][
+            'select_all_registered_charities'].replace(
             '@schema_name@', SCHEMA_NAME))
         rec = curs.fetchall()
         conn.close()
@@ -200,23 +204,23 @@ def send_to_profile_page():
             all_messages = get_all_messages()
             schedule = get_schedules_by_charity(reg_number)
             map_html_string = generate_map()
-            return render_template("main_page.html", 
-                                    name=name,
-                                    reg_number=reg_number,
-                                    all_messages=json.loads(all_messages),
-                                    map_html_string=map_html_string,
-                                    days=days_mapping,
-                                    times=times_mapping,
-                                    locations=borough_coordinates,
-                                    charities=charities,
-                                    schedule=json.loads(schedule)
-                                    )
+            return render_template("main_page.html",
+                                   name=name,
+                                   reg_number=reg_number,
+                                   all_messages=json.loads(all_messages),
+                                   map_html_string=map_html_string,
+                                   days=days_mapping,
+                                   times=times_mapping,
+                                   locations=borough_coordinates,
+                                   charities=charities,
+                                   schedule=json.loads(schedule)
+                                   )
         else:
             conn.close()
-            logging.info("Charity %s tried to log in but is not yet \
-                         registered", reg_number)
-            return render_template("register.html",
-                                   message=register_first)
+            logging.info(
+                "Charity %s tried to log in but is not yet registered",
+                reg_number)
+            return render_template("register.html", message=register_first)
     except Exception as e:
         logging.error(e)
         conn.rollback
@@ -269,17 +273,17 @@ def reg_number_submit():
         if curs.rowcount == 1:
             conn.commit()
             conn.close()
-            logging.info("Added charity %s %s to the database", name,
-                         reg_number)
+            logging.info("Added charity %s %s to the database",
+                         name, reg_number)
             return render_template("questionnaire.html",
                                    name=name,
                                    reg_number=reg_number,
-                                   message="Please complete the following \
-                                    form")
+                                   message="Please complete the following form"
+                                   )
         else:
             conn.close()
-            logging.error("Unable to add %s %s to the database", name,
-                          reg_number)
+            logging.error("Unable to add %s %s to the database",
+                          name, reg_number)
             return render_template("register.html", message=invalid_message)
     except Exception as e:
         conn.rollback
@@ -308,10 +312,10 @@ def back_home(name, reg_number):
                            all_messages=json.loads(all_messages),
                            map_html_string=map_html_string,
                            schedule=json.loads(schedule),
-                            days=days_mapping,
-                            times=times_mapping,
-                            locations=borough_coordinates,
-                            charities=charities
+                           days=days_mapping,
+                           times=times_mapping,
+                           locations=borough_coordinates,
+                           charities=charities
                            )
 
 
@@ -324,21 +328,23 @@ def get_all_messages():
         "date_time": []
     }
     try:
-        curs.execute(config['query']
-                     ['select_all_message_with_names_order_by_timestamp_desc'].
-                     replace('@schema_name@', SCHEMA_NAME))
+        curs.execute(
+            config['query'][
+                'select_all_message_with_names_order_by_timestamp_desc'
+                ].replace('@schema_name@', SCHEMA_NAME))
         all_messages = curs.fetchall()
         for message_info in all_messages:
             message_table["sender_number"].append(message_info[1])
             message_table["sender_name"].append(message_info[4])
             message_table["content"].append(message_info[2])
-            message_table["date_time"].append(message_info[3].strftime("%d/%m/%Y, %H:%M:%S"))
+            message_table["date_time"].append(
+                message_info[3].strftime("%d/%m/%Y, %H:%M:%S"))
         conn.close()
-        message_json=json.dumps(message_table, indent = 4)
+        message_json = json.dumps(message_table, indent=4)
         return message_json
     except Exception as e:
         logging.info(e)
-        conn.rollback() 
+        conn.rollback()
         conn.close()
 
 
@@ -355,13 +361,14 @@ def schedule_submit(name, reg_number):
     if not (day and time and location):
         logging.info("Missing data in schedule submission: %s, %s, %s",
                      day, time, location)
-        return render_template("questionnaire.html", 
-                               name=name, 
+        return render_template("questionnaire.html",
+                               name=name,
                                reg_number=reg_number,
                                message=missing_data)
-    
-    logging.info("Received request to save schedule with %s, %s, and %s", day, time, location)
-    
+
+    logging.info("Received request to save schedule with %s, %s, and %s",
+                 day, time, location)
+
     curs, config, conn = connect_to_database()
     try:
         curs.execute(config['insert_into']['schedule_table'].replace(
@@ -370,34 +377,38 @@ def schedule_submit(name, reg_number):
         if curs.rowcount == 1:
             conn.commit()
             conn.close()
-            logging.info("Added schedule %s, %s, %s, %s to the database", reg_number, day, time, location)
-            return render_template("questionnaire.html", 
-                        name=name, 
-                        reg_number=reg_number, 
-                        message=successful_add)
+            logging.info("Added schedule %s, %s, %s, %s to the database",
+                         reg_number, day, time, location)
+            return render_template("questionnaire.html",
+                                   name=name,
+                                   reg_number=reg_number,
+                                   message=successful_add)
         else:
             conn.close()
-            logging.info("Unable to add schedule %s, %s, %s, %s to the database", reg_number, day, time, location)
-            return render_template("questionnaire.html", 
-                                   name=name, 
-                                   reg_number=reg_number, 
+            logging.info(
+                "Unable to add schedule %s, %s, %s, %s to the database",
+                reg_number, day, time, location)
+            return render_template("questionnaire.html",
+                                   name=name,
+                                   reg_number=reg_number,
                                    message=not_added_correct)
     except Exception as e:
         conn.rollback
         conn.close()
         logging.error(e)
-        return render_template("questionnaire.html", 
-                               name=name, 
+        return render_template("questionnaire.html",
+                               name=name,
                                reg_number=reg_number,
-                               message=not_added_correct)
-    
+                               message=not_added_correct
+                               )
+
 
 @app.route('/post_message/<name>/<reg_number>', methods=["POST"])
 def post_message(name, reg_number):
     message = request.form.get("message")
     now = datetime.now()
     sql_timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
-    
+
     add_message = "Add a message to post."
     error_message = "Message could not be posted."
 
@@ -406,17 +417,17 @@ def post_message(name, reg_number):
         all_messages = get_all_messages()
         schedule = get_schedules_by_charity(reg_number)
         map_html_string = generate_map()
-        return render_template("main_page.html", 
-                                name=name,
-                                reg_number=reg_number,
-                                all_messages=json.loads(all_messages),
-                                map_html_string=map_html_string,
-                                schedule=json.loads(schedule),
-                                days=days_mapping,
-                                times=times_mapping,
-                                locations=borough_coordinates,
-                                charities=charities
-                                )
+        return render_template("main_page.html",
+                               name=name,
+                               reg_number=reg_number,
+                               all_messages=json.loads(all_messages),
+                               map_html_string=map_html_string,
+                               schedule=json.loads(schedule),
+                               days=days_mapping,
+                               times=times_mapping,
+                               locations=borough_coordinates,
+                               charities=charities
+                               )
 
     if not message:
         logging.info("Missing message content")
@@ -424,7 +435,7 @@ def post_message(name, reg_number):
                                name=name,
                                reg_number=reg_number,
                                content=add_message)
-    
+
     logging.info("Received request to save new message from %s", reg_number)
 
     curs, config, conn = connect_to_database()
@@ -440,23 +451,24 @@ def post_message(name, reg_number):
             all_messages = get_all_messages()
             schedule = get_schedules_by_charity(reg_number)
             map_html_string = generate_map()
-            return render_template("main_page.html", 
-                                    name=name,
-                                    reg_number=reg_number,
-                                    all_messages=json.loads(all_messages),
-                                    map_html_string=map_html_string,
-                                    schedule=json.loads(schedule),
-                                    days=days_mapping,
-                                    times=times_mapping,
-                                    locations=borough_coordinates,
-                                    charities=charities
-                                    )
+            return render_template("main_page.html",
+                                   name=name,
+                                   reg_number=reg_number,
+                                   all_messages=json.loads(all_messages),
+                                   map_html_string=map_html_string,
+                                   schedule=json.loads(schedule),
+                                   days=days_mapping,
+                                   times=times_mapping,
+                                   locations=borough_coordinates,
+                                   charities=charities
+                                   )
         else:
             conn.close()
-            logging.info("Unable to add message from %s to the database", reg_number)
+            logging.info("Unable to add message from %s to the database",
+                         reg_number)
             return render_template("post_message.html",
                                    name=name,
-                                   reg_number=reg_number, 
+                                   reg_number=reg_number,
                                    content=error_message)
     except Exception as e:
         conn.rollback
@@ -464,22 +476,24 @@ def post_message(name, reg_number):
         logging.error(e)
         return render_template("post_message.html",
                                name=name,
-                               reg_number=reg_number, 
+                               reg_number=reg_number,
                                content=error_message)
 
 
 def get_schedules_by_charity(reg_number):
-    (curs, config, conn) = connect_to_database() 
-    
+    logging.info("Sourcing schedules for charity %s", reg_number)
+    (curs, config, conn) = connect_to_database()
+
     schedule_table = {
-        "id":[],
+        "id": [],
         "day": [],
         "time": [],
         "location": []
     }
-    
+
     try:
-        curs.execute(config['query']['select_schedule_by_charity_number'].replace(
+        curs.execute(config['query'][
+            'select_schedule_by_charity_number'].replace(
             '@schema_name@', SCHEMA_NAME), [reg_number]
         )
         rec = curs.fetchall()
@@ -487,9 +501,9 @@ def get_schedules_by_charity(reg_number):
             schedule_table["id"].append(event_info[0])
             schedule_table["day"].append(event_info[2])
             schedule_table["time"].append(event_info[3])
-            schedule_table["location"].append(event_info[4])        
+            schedule_table["location"].append(event_info[4])
         conn.close()
-        schedule_json = json.dumps(schedule_table, indent = 4) 
+        schedule_json = json.dumps(schedule_table, indent=4)
         return schedule_json
     except Exception as e:
         logging.info(e)
@@ -498,10 +512,11 @@ def get_schedules_by_charity(reg_number):
 
 
 def delete_single_event(id):
-    (curs, config, conn) = connect_to_database() 
-    
+    (curs, config, conn) = connect_to_database()
+
     try:
-        curs.execute(config['delete_from']['delete_event_from_schedule'].replace(
+        curs.execute(config['delete_from'][
+            'delete_event_from_schedule'].replace(
             '@schema_name@', SCHEMA_NAME), [id]
         )
         if (curs.rowcount == 1):
@@ -518,33 +533,13 @@ def delete_event(name, reg_number):
     decoded_name = unquote(name)
     id = request.form.get("rowId")
     delete_single_event(id)
-    return redirect(url_for('back_home', name=decoded_name, reg_number=reg_number))
-
-# Can we delete this function - seems like it's not being used?
-def get_all_schedules():
-    (curs, config, conn) = connect_to_database()
-    message_table = {
-        "sender_name": [],
-        "content": [],
-        "date_time": []
-    }
-    try:
-        curs.execute(config['query']['select_all_message_with_names_order_by_timestamp_desc'].replace('@schema_name@', SCHEMA_NAME))
-        all_messages = curs.fetchall()
-        for message_info in all_messages:
-            message_table["sender_name"].append(message_info[4])
-            message_table["content"].append(message_info[2])
-            message_table["date_time"].append(message_info[3].strftime("%d/%m/%Y, %H:%M:%S"))
-        conn.close()
-        message_json = json.dumps(message_table, indent = 4) 
-        return message_json
-    except Exception as e:
-        logging.info(e)
-        conn.rollback()   
-        conn.close()
+    return redirect(url_for('back_home',
+                    name=decoded_name,
+                    reg_number=reg_number))
 
 
-@app.route('/contact_info/<original_name>/<original_reg_number>/<name>/<reg_number>')
+@app.route('/contact_info/<original_name>/\
+    <original_reg_number>/<name>/<reg_number>')
 def send_to_contact_page(original_name, original_reg_number, name, reg_number):
     response = get_charity_contact_info(reg_number)
     decoded_name = unquote(original_name)
@@ -555,7 +550,7 @@ def send_to_contact_page(original_name, original_reg_number, name, reg_number):
         phone_number = charity_contact_info["phone"]
         email = charity_contact_info["email"]
         website = charity_contact_info["web"]
-        
+
         return render_template("contact_info.html",
                                name=name,
                                address=address,
@@ -580,36 +575,40 @@ def get_charity_contact_info(number):
     if response.status_code == 200:
         return response
     else:
-        return None@app.route('/filter_map/<name>/<reg_number>', methods=['POST'])
+        return None
 
 
+@app.route('/filter_map/<name>/<reg_number>', methods=['POST'])
 def filter_map(name, reg_number):
     day = request.form.get("day")
     time = request.form.get("time")
     location = request.form.get("location")
     charity = request.form.get("charity")
-    logging.info("Received request to filter map by %s, %s, %s, %s", day, time, location, charity)
+    logging.info("Received request to filter map by %s, %s, %s, %s",
+                 day, time, location, charity)
     charities = get_all_registered_charities()
     all_messages = get_all_messages()
+    schedule = get_schedules_by_charity(reg_number)
     map_html_string = generate_map(day, time, location, charity)
-    return render_template("main_page.html", 
-                            name=name,
-                            reg_number=reg_number,
-                            all_messages=json.loads(all_messages),
-                            map_html_string=map_html_string,
-                            days=days_mapping,
-                            times=times_mapping,
-                            locations=borough_coordinates,
-                            charities=charities,
-                            selected_day=day,
-                            selected_time=time,
-                            selected_location=location,
-                            selected_charity=charity
-                            )
+    return render_template("main_page.html",
+                           name=name,
+                           reg_number=reg_number,
+                           all_messages=json.loads(all_messages),
+                           map_html_string=map_html_string,
+                           schedule=json.loads(schedule),
+                           days=days_mapping,
+                           times=times_mapping,
+                           locations=borough_coordinates,
+                           charities=charities,
+                           selected_day=day,
+                           selected_time=time,
+                           selected_location=location,
+                           selected_charity=charity
+                           )
 
-# Function to establish a database connection
+
 def generate_map(day=None, time=None, location=None, charity=None):
-    (curs, config, conn) = connect_to_database() 
+    (curs, config, conn) = connect_to_database()
 
     criteria_to_add = []
     items_to_input = []
@@ -636,7 +635,8 @@ def generate_map(day=None, time=None, location=None, charity=None):
 
     try:
         curs.execute(config['query']['select_query_experiment'].replace(
-            '@schema_name@', SCHEMA_NAME).replace('@criteria@', criteria), items_to_input)
+            '@schema_name@', SCHEMA_NAME).replace(
+                '@criteria@', criteria), items_to_input)
         rec = curs.fetchall()
         conn.close()
         return generate_map_html(rec)
@@ -644,6 +644,7 @@ def generate_map(day=None, time=None, location=None, charity=None):
         logging.info(c)
         conn.rollback()
         conn.close()
+
 
 def generate_map_html(schedules):
 
@@ -659,7 +660,8 @@ def generate_map_html(schedules):
         day = schedule[2]
         time = schedule[3]
         location = schedule[4]
-        popup_content = f"Charity: {charity}<br>Day: {day}<br>Time: {time}<br>Location: {location}"
+        popup_content = f"Charity: {charity}<br>Day: \
+            {day}<br>Time: {time}<br>Location: {location}"
 
         # Add information to the respective borough
         if location in borough_coordinates:
@@ -667,10 +669,13 @@ def generate_map_html(schedules):
             if 'popup' not in borough_coordinates[location]:
                 borough_coordinates[location]['popup'] = popup_content
             else:
-                borough_coordinates[location]['popup'] += f"<br><br>{popup_content}"
+                borough_coordinates[
+                    location]['popup'] += f"<br><br>{popup_content}"
 
     # Get the absolute path to the GeoJSON file
-    geojson_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'london_boroughs.geojson'))
+    geojson_path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__), '..', 'london_boroughs.geojson'))
 
     # Load the GeoJSON file with London borough boundaries
     with open(geojson_path, "r") as geojson_file:
@@ -694,41 +699,51 @@ def generate_map_html(schedules):
             'weight': 3,
             'fillOpacity': 0.40
         },
-        #tooltip=folium.GeoJsonTooltip(fields=['name'], aliases=['Borough'])
+        # tooltip=folium.GeoJsonTooltip(fields=['name'], aliases=['Borough'])
     ).add_to(my_map)
-
 
     # Add event information to boroughs
     for location, data in borough_coordinates.items():
         if location in locations_with_events and data['popup']:
             # Create an HTML table string for the popup
             table_content = """
-            <table style="width:100%; border-collapse: collapse; margin-top: 15px;">
-                <tr>
-                    <th colspan="4" style="text-align: center; font-size: 16px; padding-bottom: 10px; background-color: #FFFFFF;">{}</th>
-                </tr>
-                <tr>
-                    <th style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">Charity</th>
-                    <th style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">Day</th>
-                    <th style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">Time</th>
-                    <th style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">Location</th>
-                </tr>
+<table style="width:100%; border-collapse: collapse; margin-top: 15px;">
+    <tr>
+        <th colspan="4" style="text-align: center; font-size: 16px; \
+            padding-bottom: 10px; background-color: #FFFFFF;">{}</th>
+    </tr>
+    <tr>
+        <th style="padding: 3px; text-align: left; border-bottom: \
+            1px solid #ddd; padding-right: 15px;">Charity</th>
+        <th style="padding: 3px; text-align: left; border-bottom: \
+            1px solid #ddd; padding-right: 15px;">Day</th>
+        <th style="padding: 3px; text-align: left; border-bottom: \
+            1px solid #ddd; padding-right: 15px;">Time</th>
+        <th style="padding: 3px; text-align: left; border-bottom: \
+            1px solid #ddd; padding-right: 15px;">Location</th>
+    </tr>
             """.format(location)
 
-            sorted_events = sorted([schedule for schedule in schedules if schedule[4] == location],
-                                key=lambda x: (days_mapping[x[2]], times_mapping[x[3]]))
+            sorted_events = sorted(
+                [schedule for schedule in
+                    schedules if schedule[4] == location],
+                key=lambda x: (days_mapping[x[2]], times_mapping[x[3]]))
 
             for index, schedule in enumerate(sorted_events):
                 background_color = "#ffffff" if index % 2 == 0 else "#f2f2f2"
 
                 table_content += f"""
-                <tr style="background-color: {background_color};">
-                    <td style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">{schedule[5]}</td>
-                    <td style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">{schedule[2]}</td>
-                    <td style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">{schedule[3]}</td>
-                    <td style="padding: 3px; text-align: left; border-bottom: 1px solid #ddd; padding-right: 15px;">{schedule[4]}</td>
-                </tr>
-                """
+<tr style="background-color: {background_color};">
+    <td style="padding: 3px; text-align: left; border-bottom: \
+        1px solid #ddd; padding-right: 15px;">{schedule[5]}</td>
+    <td style="padding: 3px; text-align: left; border-bottom: \
+        1px solid #ddd; padding-right: 15px;">{schedule[2]}</td>
+    <td style="padding: 3px; text-align: left; border-bottom: \
+        1px solid #ddd; padding-right: 15px;">{schedule[3]}</td>
+    <td style="padding: 3px; text-align: left; border-bottom: \
+        1px solid #ddd; padding-right: 15px;">{schedule[4]}</td>
+</tr>
+"""
 
             table_content += "</table>"
 
@@ -741,7 +756,4 @@ def generate_map_html(schedules):
 
     # Get the map HTML as a string
     map_html_string = my_map._repr_html_()
-
-
     return map_html_string
-
