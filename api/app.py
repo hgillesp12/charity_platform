@@ -574,10 +574,10 @@ def get_charity_contact_info(number):
     if response.status_code == 200:
         return response
     else:
-        return None@app.route(
-            '/filter_map/<name>/<reg_number>', methods=['POST'])
+        return None
 
 
+@app.route('/filter_map/<name>/<reg_number>', methods=['POST'])
 def filter_map(name, reg_number):
     day = request.form.get("day")
     time = request.form.get("time")
