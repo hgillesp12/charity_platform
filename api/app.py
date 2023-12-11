@@ -12,7 +12,7 @@ import logging
 
 app = Flask(__name__)
 
-SCHEMA_NAME = 'test__schema'
+SCHEMA_NAME = 'live_demo'
 API_KEY = os.getenv("REGISTERED_CHARITIES_API_KEY")
 logging.basicConfig(level=logging.INFO)
 
@@ -481,6 +481,7 @@ def post_message(name, reg_number):
 
 
 def get_schedules_by_charity(reg_number):
+    logging.info("Sourcing schedules for charity %s", reg_number)
     (curs, config, conn) = connect_to_database()
 
     schedule_table = {
@@ -587,12 +588,14 @@ def filter_map(name, reg_number):
                  day, time, location, charity)
     charities = get_all_registered_charities()
     all_messages = get_all_messages()
+    schedule = get_schedules_by_charity(reg_number)
     map_html_string = generate_map(day, time, location, charity)
     return render_template("main_page.html",
                            name=name,
                            reg_number=reg_number,
                            all_messages=json.loads(all_messages),
                            map_html_string=map_html_string,
+                           schedule=json.loads(schedule),
                            days=days_mapping,
                            times=times_mapping,
                            locations=borough_coordinates,
